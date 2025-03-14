@@ -5,7 +5,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import '../index.css';
 import ThemeToggle from '../components/ThemeToggle';
-import Header from '../components/layouts/Logo';
 import Logo from '../components/layouts/Logo';
 
 
@@ -33,11 +32,13 @@ const Login: React.FC = () => {
   return (
     <div>
     <div className="min-h-screen flex flex-col justify-center  items-center bg-background-light dark:bg-background-dark">
-      <ThemeToggle />
+      <div className='flex justify-center mb-6'>
+        <ThemeToggle />
+      </div>
     <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-orange-300/40 blur-[200px] z-0"/>
-    <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-orange-500/60  to-blue-600/40 blur-[200px] z-0"/>
+    <div className="fixed top-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-orange-500/60  to-blue-600/40 blur-[200px] z-0"/>
       
-      <Card className="w-[500px] card backdrop-blur-lg p-4 bg-gradient-to-r bg-from-neutral-200/50 dark:bg-from-neutral-900/50 bg-to-transparent">
+      <Card className="w-[500px] card backdrop-blur-lg p-4 bg-gradient-to-br from-neutral-100/50 dark:from-neutral-900/50 to-white/50 dark:to-black/50">
         <Logo />
         <h2 className="text-2xl font-bold text-center text-text-light dark:text-text-dark mb-8">
           התחברות לאיזור אישי
@@ -88,7 +89,7 @@ const Login: React.FC = () => {
             </Button>
           </Form.Item>
 
-          <div className="text-center text-text-light dark:text-text-dark">
+          <div className="text-center text-md text-text-light dark:text-text-dark">
             אין לך חשבון?{' '}
             <Link to="/signup" className="text-primary-light dark:text-primary-dark hover:underline">
               הרשם עכשיו

@@ -41,7 +41,7 @@ export default {
         'lg': '0.5rem',
         'xl': '0.75rem',
         '2xl': '1rem',
-        'card': '2px',
+        'card': '8px',
         'button': '2px',
         'full': '9999px',
       },
@@ -53,7 +53,7 @@ export default {
       },
       boxShadow: {
         'card': '0 2px 4px 0 rgba(0,0,0,0.1)',
-        'card-dark': '0 2px 4px 0 rgba(255,255,255,0.1)',
+        // 'card-dark': '0 2px 4px 0 rgba(255,255,255,0.1)',
       },
       screens: {
         'sm': '640px',

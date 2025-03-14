@@ -69,9 +69,14 @@ const Dashboard: React.FC = () => {
 
   return (
     <DashboardLayout>
+      <div className=" text-center items-center mt-4 mb-8">
+        <Title level={2}>ברוכים הבאים לאיזור האישי</Title>
+        <Title level={4}>פה תוכלו למצוא את כל הדרכות שלכם,לשאול שאלות ולקבל תמיכה בכל שלב.</Title>
+      </div>
+
       <Row gutter={[16, 16]}>
-        <Col span={8}>
-          <Card className="bg-card-light dark:bg-card-dark shadow-card dark:shadow-card-dark">
+        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Card className="bg-card-light dark:bg-card-dark shadow-card text-center">
             <Statistic
               title={<span className="text-text-light dark:text-text-dark">סה״כ הדרכות</span>}
               value={completedTrainings}
@@ -80,8 +85,8 @@ const Dashboard: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card className="bg-card-light dark:bg-card-dark shadow-card dark:shadow-card-dark">
+        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Card className="bg-card-light dark:bg-card-dark shadow-card text-center">
             <Statistic
               title={<span className="text-text-light dark:text-text-dark">זמן למידה כולל</span>}
               value={totalDuration}
@@ -91,8 +96,8 @@ const Dashboard: React.FC = () => {
             />
           </Card>
         </Col>
-        <Col span={8}>
-          <Card className="bg-card-light dark:bg-card-dark shadow-card dark:shadow-card-dark">
+        <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+          <Card className="bg-card-light dark:bg-card-dark shadow-card  text-center">
             <Statistic
               title={<span className="text-text-light dark:text-text-dark">הדרכות שהושלמו</span>}
               value={completedTrainings}
@@ -107,9 +112,9 @@ const Dashboard: React.FC = () => {
         הדרכות מומלצות
       </h2>
 
-      <Row gutter={[16, 16]}>
+      <Row className='flex justify-center' gutter={[20, 20]}>
         {(trainings || exampleTrainings).slice(0, 3).map((training) => (
-          <Col key={training.id} xs={24} sm={12} md={8}>
+          <Col className='flex max-w-sm' key={training.id} xs={24} sm={12} md={8}>
             <TrainingCard {...training} />
           </Col>
         ))}

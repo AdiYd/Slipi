@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider, theme } from 'antd';
 import heIL from 'antd/locale/he_IL';
@@ -18,6 +18,7 @@ import { useTheme } from './contexts/ThemeContext';
 const AppContent: React.FC = () => {
   const { theme: currentTheme } = useTheme();
 
+
   return (
     <ConfigProvider
       locale={heIL}
@@ -31,10 +32,9 @@ const AppContent: React.FC = () => {
           colorBorder: currentTheme === 'dark' ? '#4a5568' : '#e2e8f0',
         },
         components: {
-          Input: {
-            colorBgContainer: currentTheme === 'dark' ? '#1a1a1a' : '#ffffff',
-            colorBorder: currentTheme === 'dark' ? '#4a5568' : '#e2e8f0',
+          Typography: {
             colorText: currentTheme === 'dark' ? '#e2e8f0' : '#2d3748',
+            colorTextHeading: currentTheme === 'dark' ? '#e2e8f0' : '#2d3748',
           },
         },
       }}
@@ -50,6 +50,7 @@ const AppContent: React.FC = () => {
                   path="/dashboard"
                   element={
                     <PrivateRoute>
+                      <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-orange-300/40 blur-[200px] z-0"/>
                       <Dashboard />
                     </PrivateRoute>
                   }

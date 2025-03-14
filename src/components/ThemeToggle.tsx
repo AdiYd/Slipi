@@ -1,35 +1,38 @@
 import { useState, useEffect } from 'react';
 import { Icon } from "@iconify/react/dist/iconify.js";
+import { useTheme } from '../contexts/ThemeContext';
 
-const ThemeToggle = ({gap='10px'}) => {
-  const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem('Slipi-theme');
-    return savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  });
+
+
+const ThemeToggle = ({gap='20px', showCurrentTheme=false}) => {
+  const { theme, toggleTheme } = useTheme();
+ 
 
   useEffect(() => {
-    if (darkMode) {
+    if (theme === 'dark') {
       document.documentElement.classList.add('dark');
       localStorage.setItem('Slipi-theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
       localStorage.setItem('Slipi-theme', 'light');
     }
-  }, [darkMode]);
+  }, [theme]);
 
   return (
     <div style={{gap}} className="relative flex">
       <div 
-        style={{opacity: darkMode ? 0.5 : 1}}
-        onClick={() => setDarkMode(false)}
-        className="p-3 rounded-full bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark cursor-pointer"
+        title='תצוגה בהירה'
+        style={{...(theme === 'dark' && {opacity: 0.5}), display: showCurrentTheme ? theme === 'dark' ? 'none' : 'block' : 'block'}}
+        onClick={() => toggleTheme()}
+        className="p-3 rounded-full  cursor-pointer bg-white/50 dark:bg-black/50 backdrop-blur-md text-text-light dark:text-text-dark shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out"
       >
         <Icon icon="ix:light-dark" className="w-5 h-5" />
       </div>
       <div 
-        style={{opacity: darkMode ? 1 : 0.5}}
-        onClick={() => setDarkMode(true)}
-        className="p-3 rounded-full bg-card-light dark:bg-card-dark text-text-light dark:text-text-dark shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary-light dark:focus:ring-primary-dark cursor-pointer"
+        title='תצוגה כהה'
+        style={{...(theme === 'dark' && {opacity: 1}), display: showCurrentTheme ? theme === 'dark' ? 'block' : 'none' : 'block'}}
+        onClick={() => toggleTheme()}
+        className="p-3 rounded-full cursor-pointer bg-white/50 dark:bg-black/50 backdrop-blur-md  text-text-light dark:text-text-dark shadow-lg hover:scale-110 transition-transform duration-200 ease-in-out"
       >
         <Icon icon="circum:dark" className="w-5 h-5" />
       </div>
