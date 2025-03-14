@@ -2,7 +2,7 @@ import React from 'react';
 
 const Logo: React.FC = () => {
   return (
-      <div id="logo" className="mx-auto w-full self-center flex justify-center">
+      <div id="logo" className="mx-auto relative top-2 w-fit self-center flex justify-center">
         <a 
             href="https://www.slipi.co.il/" 
             title="slipi"

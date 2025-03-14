@@ -6,7 +6,17 @@ import { useChat } from '../contexts/ChatContext';
 const { TextArea } = Input;
 const { Text } = Typography;
 
-const Chat: React.FC = () => {
+interface ChatComponentProps {
+  trainingId?: string;
+  initialMessages?: Array<{
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: string;
+  }>;
+}
+
+const ChatComponent: React.FC<ChatComponentProps> = ({ 
+}) => {
   const [message, setMessage] = useState('');
   const { messages, loading, sendMessage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -71,7 +81,7 @@ const Chat: React.FC = () => {
           />
           <Button
             type="primary"
-            icon={<SendOutlined />}
+            icon={<SendOutlined rotate={180} />}
             onClick={handleSend}
             loading={loading}
             className="bg-primary-light hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary-light transition-colors duration-300"
@@ -82,4 +92,4 @@ const Chat: React.FC = () => {
   );
 };
 
-export default Chat; 
+export default ChatComponent; 

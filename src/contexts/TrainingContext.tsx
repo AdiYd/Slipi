@@ -12,6 +12,7 @@ interface Training {
   imageUrl: string;
   videoUrl: string;
   createdAt: string;
+  subtitle: string;
 }
 
 interface TrainingContextType {

@@ -28,6 +28,10 @@ export default {
           light: '#2d3748',
           dark: '#e2e8f0'
         },
+        textSecondary: {
+          light: '#6b7280',
+          dark: '#9ca3af'
+        },
         border: {
           light: '#e2e8f0',
           dark: '#4a5568'

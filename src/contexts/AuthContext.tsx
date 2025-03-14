@@ -4,11 +4,28 @@ import axios from 'axios';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
+interface Training {
+  id: string;
+  finished: boolean;
+  chatSession: ChatMessage[];
+}
+
+interface ChatMessage {
+  role: string;
+  content: string;
+  timestamp: string;
+}
+
+
+
 interface User {
   id: string;
   fullName: string;
   email: string;
   phone: string;
+  trainings: Training[];
+  chatSession: ChatMessage[];
+  finished: boolean;
 }
 
 interface AuthContextType {
@@ -20,6 +37,42 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const demoUser = {
+  id: 'demo',
+  fullName: 'ישראל ישראלי',
+  email: 'Israel@Israeli.co.il',
+  phone: '0541234567',
+  trainings: [{
+    id: '1',
+    finished: true,
+    chatSession: [{
+     role: 'user',
+     content: 'Hello',
+     timestamp: '2021-01-01T00:00:00.000Z'
+    },
+    {
+      role: 'assistant',
+      content: 'Hello',
+      timestamp: '2021-01-01T00:00:00.000Z'
+    },
+    {
+      role: 'user',
+      content: 'Hello',
+      timestamp: '2021-01-01T00:00:00.000Z'
+    },
+    {
+      role: 'assistant',
+      content: 'Hello',
+      timestamp: '2021-01-01T00:00:00.000Z'
+    }
+  ]},
+  {
+    id: '2',
+    finished: false,
+    chatSession: []
+  }
+]
+};
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -65,12 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       if (email === 'demo') {
         localStorage.setItem('authToken', 'demo');
-        setUser({
-          id: 'demo',
-          fullName: 'ישראל ישראלי',
-          email: 'Israel@Israeli.co.il',
-          phone: '0541234567'
-        });
+        setUser(demoUser);
         message.success('התחברת בהצלחה!');
         navigate('/dashboard');
         return;

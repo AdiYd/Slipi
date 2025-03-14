@@ -50,7 +50,7 @@ const Signup: React.FC = () => {
     {/* <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-orange-300/40 blur-[200px] z-0"/> */}
     <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-orange-500/60  to-blue-600/40 blur-[200px] z-0"/>
       
-    <Card className="w-[500px] card backdrop-blur-lg p-4 bg-gradient-to-br from-neutral-100/50 dark:from-neutral-900/50 to-white/50 dark:to-black/50">
+    <Card className="w-[500px] border-[0.9px] border-gray-300 dark:border-gray-700 backdrop-blur-lg p-4 bg-gradient-to-br from-neutral-100/50 dark:from-neutral-900/50 to-white/50 dark:to-black/50">
         <Logo />
         <Title level={2} className="text-2xl font-bold text-center text-text-light dark:text-text-dark mb-8">
           הרשמה

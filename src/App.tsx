@@ -14,6 +14,8 @@ import Trainings from './pages/Trainings';
 import Profile from './pages/Profile';
 import PrivateRoute from './components/PrivateRoute';
 import { useTheme } from './contexts/ThemeContext';
+import TrainingDetails from './pages/TrainingDetails';
+
 
 const AppContent: React.FC = () => {
   const { theme: currentTheme } = useTheme();
@@ -50,7 +52,6 @@ const AppContent: React.FC = () => {
                   path="/dashboard"
                   element={
                     <PrivateRoute>
-                      <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-orange-300/40 blur-[200px] z-0"/>
                       <Dashboard />
                     </PrivateRoute>
                   }
@@ -68,6 +69,14 @@ const AppContent: React.FC = () => {
                   element={
                     <PrivateRoute>
                       <Trainings />
+                    </PrivateRoute>
+                  }
+                />
+                <Route
+                  path="/trainings/:id"
+                  element={
+                    <PrivateRoute>
+                      <TrainingDetails />
                     </PrivateRoute>
                   }
                 />

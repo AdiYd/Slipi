@@ -1,76 +1,132 @@
 import React from 'react';
-import { Row, Col, Typography, Spin, Select, Input } from 'antd';
+import { Row, Col, Typography, Spin, Select, Input, Tag, Space } from 'antd';
 import { SearchOutlined, BookOutlined } from '@ant-design/icons';
 import { useTraining } from '../contexts/TrainingContext';
 import TrainingCard from '../components/TrainingCard';
 import DashboardLayout from '../components/layouts/DashboardLayout';
+import { exampleTrainings } from './Dashboard';
 
 const { Title } = Typography;
 const { Search } = Input;
 const { Option } = Select;
 
-const exampleTrainings = [
-  {
-    id: '1',
-    title: 'היכרות עם Slipi Comfort',
-    description: 'מי אנחנו ומה היתרון שלנו? הכרת החברה, הערכים, הסניפים והיתרונות התחרותיים שלנו.',
-    duration: 45,
-    difficulty: 'beginner',
-    category: 'מבוא לחברה',
-    imageUrl: '/company-intro.jpg'
-  },
-  {
-    id: '2',
-    title: 'מוצרי החברה',
-    description: 'הכרת המוצרים שלנו: מזרנים אורתופדיים, מיטות בהתאמה אישית וספות נוער מתכווננות.',
-    duration: 60,
-    difficulty: 'intermediate',
-    category: 'מוצרים',
-    imageUrl: '/products.jpg'
-  },
-  {
-    id: '3',
-    title: 'תהליך המכירה',
-    description: 'כיצד עובדים מול לקוח? מזיהוי צרכים ועד סגירת עסקה.',
-    duration: 90,
-    difficulty: 'advanced',
-    category: 'מכירות',
-    imageUrl: '/sales.jpg'
-  }
+export const categoryColors: Record<string, string> = {
+  'מבוא לחברה': 'magenta',
+  'מוצרים': 'purple',
+  'מכירות': 'red',
+  'שירות לקוחות': 'blue',
+  'טכנולוגיה ומערכות': 'orange'
+};
+export const difficultyColors = {
+  beginner: '#4CAF50',
+  intermediate: '#FF9800',
+  advanced: '#F44336'
+};
+
+export const categories = [
+  'מבוא לחברה',
+  'מוצרים',
+  'מכירות',
+  'שירות לקוחות',
+  'טכנולוגיה ומערכות'
+];
+
+export const difficultyLabels = {
+  all: 'כל הרמות',
+  beginner: 'בסיסי',
+  intermediate: 'מתקדם',
+  advanced: 'מומחה'
+};
+
+export  const difficulties = [
+  { value: 'beginner', label: 'בסיסי', color: 'success' },
+  { value: 'intermediate', label: 'מתקדם', color: 'processing' },
+  { value: 'advanced', label: 'מומחה', color: 'error' }
 ];
 
 const Trainings: React.FC = () => {
   const { trainings, loading, error, fetchTrainings } = useTraining();
   const [searchText, setSearchText] = React.useState('');
-  const [selectedDifficulty, setSelectedDifficulty] = React.useState<string>('all');
-  const [selectedCategory, setSelectedCategory] = React.useState<string>('all');
+  const [selectedDifficulties, setSelectedDifficulties] = React.useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     fetchTrainings();
   }, [fetchTrainings]);
 
-  const categories = [
-    'מבוא לחברה',
-    'מוצרים',
-    'מכירות',
-    'שירות לקוחות',
-    'טכנולוגיה ומערכות'
-  ];
+  const handleDifficultyToggle = (difficulty: string) => {
+    setSelectedDifficulties(prev => 
+      prev.includes(difficulty) 
+        ? prev.filter(d => d !== difficulty)
+        : [...prev, difficulty]
+    );
+  };
 
-  const difficultyLabels = {
-    all: 'כל הרמות',
-    beginner: 'בסיסי',
-    intermediate: 'מתקדם',
-    advanced: 'מומחה'
+  const handleCategoryToggle = (category: string) => {
+    setSelectedCategories(prev => 
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchText(e.target.value);
   };
 
   const filteredTrainings = (trainings || exampleTrainings).filter(training => {
-    const matchesSearch = training.title.toLowerCase().includes(searchText.toLowerCase()) ||
-                         training.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchesDifficulty = selectedDifficulty === 'all' || training.difficulty === selectedDifficulty;
-    const matchesCategory = selectedCategory === 'all' || training.category === selectedCategory;
+    if (searchText === '' && selectedDifficulties.length === 0 && selectedCategories.length === 0) {
+      return true;
+    }
+
+    const matchesSearch = searchText === '' || 
+      training.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      training.description.toLowerCase().includes(searchText.toLowerCase());
+
+    const matchesDifficulty = selectedDifficulties.length === 0 || 
+      selectedDifficulties.includes(training.difficulty);
+
+    const matchesCategory = selectedCategories.length === 0 || 
+      selectedCategories.includes(training.category);
+
     return matchesSearch && matchesDifficulty && matchesCategory;
   });
+
+  const renderFilters = () => (
+    <div className="mb-6 space-y-4">
+      <div>
+          <Title className='!text-sm' level={5}>רמת קושי:</Title>
+        <Space size={[0, 8]} wrap>
+          {difficulties.map(({ value, label, color }) => (
+            <Tag
+              key={value}
+              color={!selectedDifficulties.includes(value) ? 'default' : color}
+              className="cursor-pointer text-xs py-1 px-3 rounded-full hover:scale-105 transition-transform duration-300"
+              onClick={() => handleDifficultyToggle(value)}
+            >
+              {label}
+            </Tag>
+          ))}
+        </Space>
+      </div>
+      
+      <div>
+        <Title className='!text-sm' level={5}>נושא:</Title>
+        <Space size={[0, 8]} wrap>
+          {categories.map(category => (
+            <Tag
+              key={category}
+              color={!selectedCategories.includes(category) ? 'default' : categoryColors[category]}
+              className="cursor-pointer text-xs py-1 px-3 rounded-full hover:scale-105 transition-transform duration-300"
+              onClick={() => handleCategoryToggle(category)}
+            >
+              {category}
+            </Tag>
+          ))}
+        </Space>
+      </div>
+    </div>
+  );
 
   if (loading) {
     return (
@@ -108,42 +164,18 @@ const Trainings: React.FC = () => {
             allowClear
             enterButton={<SearchOutlined />}
             size="large"
-            onChange={e => setSearchText(e.target.value)}
+            onChange={handleSearchChange}
+            value={searchText}
             className="w-full"
           />
         </Col>
-        <Col xs={24} sm={8}>
-          <Select
-            className="w-full"
-            placeholder="רמת הדרכה"
-            size="large"
-            value={selectedDifficulty}
-            onChange={setSelectedDifficulty}
-          >
-            {Object.entries(difficultyLabels).map(([value, label]) => (
-              <Option key={value} value={value}>{label}</Option>
-            ))}
-          </Select>
-        </Col>
-        <Col xs={24} sm={8}>
-          <Select
-            className="w-full"
-            placeholder="נושא"
-            size="large"
-            value={selectedCategory}
-            onChange={setSelectedCategory}
-          >
-            <Option value="all">כל הנושאים</Option>
-            {categories.map(category => (
-              <Option key={category} value={category}>{category}</Option>
-            ))}
-          </Select>
-        </Col>
       </Row>
+
+      {renderFilters()}
 
       <Row gutter={[16, 16]}>
         {filteredTrainings.map(training => (
-          <Col key={training.id} xs={24} sm={12} md={8} lg={6}>
+          <Col className='flex' key={training.id} xs={24} sm={12} md={8} lg={6}>
             <TrainingCard {...training} />
           </Col>
         ))}
