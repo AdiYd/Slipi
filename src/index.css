@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    font-family: 'Rubik', sans-serif;
+    @apply leading-normal font-normal;
+  }
+
+  body {
+    @apply m-0 bg-background-light dark:bg-background-dark min-w-[320px] min-h-screen;
+  }     
+
+  #root {
+    @apply w-full min-h-screen;
+  }
+}
+
+@layer components {
+  /* RTL Support */
+  .ant-form-item-label {
+    @apply text-right;
+  }
+
+  .card {
+    @apply bg-white dark:bg-neutral-900 shadow-md text-black dark:text-white border-none dark:border-[1px] dark:border-neutral-700/50 rounded-card;
+  }
+
+
+  .ant-input-affix-wrapper,
+  .ant-input-affix-wrapper .ant-input {
+    direction: rtl;
+  }
+
+  /* Custom Scrollbar - Keep as regular CSS since Tailwind doesn't handle scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-600 rounded;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500 dark:bg-gray-500;
+  }
+}
+
+/* Dark Mode Support */
+.dark ::-webkit-scrollbar-track {
+  background: #1f1f1f;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #666;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #888;
+} 
