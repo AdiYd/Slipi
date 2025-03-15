@@ -5,9 +5,9 @@ import { motion } from 'framer-motion';
 import { useTraining } from '../contexts/TrainingContext';
 import TrainingCard from '../components/TrainingCard';
 import DashboardLayout from '../components/layouts/DashboardLayout';
-import { Icon } from '@iconify/react/dist/iconify.js';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import '../index.css';
 
 const { Title } = Typography;
 
@@ -151,18 +151,25 @@ const Dashboard: React.FC = () => {
     speed: 500,
     slidesToShow: 3,
     slidesToScroll: 1,
-    autoplay: true,
+    // autoplay: true,
     autoplaySpeed: 3000,
     responsive: [
       {
         breakpoint: 1024,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
         }
       },
       {
-        breakpoint: 768,
+        breakpoint: 480,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -282,8 +289,12 @@ const Dashboard: React.FC = () => {
             onClick={handlePrev}
           />
           
-          <Carousel  ref={carouselRef} {...settings}>
-            {allTrainings.map((training) => (
+          <Carousel 
+            ref={carouselRef} 
+            {...settings}
+            className="training-carousel"
+          >
+            {allTrainings.map((training) => ( 
               <div key={training.id} className="px-2 overflow-visible">
                 <TrainingCard {...training} />
               </div>
@@ -300,7 +311,7 @@ const Dashboard: React.FC = () => {
       </div>
 
       {/* Completed Trainings Section */}
-      <motion.div className="my-8">
+      <motion.div className="mt-12 mb-8">
         <Card className="card*">
           <Title level={3}>הדרכות שהושלמו</Title>
           <List

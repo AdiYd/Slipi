@@ -85,7 +85,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Sider
         width={200}
         theme={theme}
-        className={`card rounded-none shadow-none border-none fixed h-screen
+        className={`card* bg-background-light dark:bg-background-dark rounded-lg my-2 shadow-none border-none fixed h-screen
           ${isMobile ? 'z-50' : 'z-40'} 
           ${isMobile ? (collapsed ? '-right-[200px]' : 'right-0') : 'right-0'}
           transition-all duration-300`}
@@ -103,7 +103,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           className="h-full flex flex-col"
         >
           <div className="flex-1">
-            <div className="h-16 flex items-center justify-between px-4">
+          <div className="h-16 mt-4 flex items-center justify-between px-4">
               <div className="h-8 flex-1 bg-transparent dark:bg-black/20 rounded" />
               {(!isMobile || (isMobile && !collapsed)) && (
                 <Button
@@ -117,6 +117,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   className="text-text-light dark:text-text-dark z-50 ml-2"
                 />
               )}
+              </div>
+              {isMobile && ( <div className=' items-center justify-center'>
+                
+                    <Button
+                      type="text"
+                      icon={<MenuOutlined />}
+                      onClick={() => setCollapsed(!collapsed)}
+                      className="relative self-center ml-4 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
+                    />
+              </div>)}
+            <div className='flex flex-col items-center justify-center '>
+              <Logo />
+              {!isMobile && !collapsed &&
+               <span className='w-full text-base text-center my-2 self-center' >
+                    שלום, {user?.fullName}
+              </span>}
             </div>
             <Menu
               theme={theme}
@@ -124,7 +140,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               selectedKeys={[location.pathname]}
               items={menuItems}
               onClick={handleMenuClick}
-              className="card rounded-none shadow-none border-none min-h-[250px] border-r-0 bg-transparent"
+              className="card rounded-none shadow-none border-none justify-between flex flex-col mt-4 min-h-[250px] border-r-0 bg-transparent"
               style={{ background: 'transparent' }}
             />
           </div>
@@ -150,7 +166,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Layout className={`transition-all duration-300 ${
         !isMobile ? (collapsed ? 'mr-[80px]' : 'mr-[200px]') : 'mr-0'
       }`}>
-        <motion.header
+        {/* <motion.header
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -168,7 +184,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               className="relative self-center ml-4 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
             />
           )}
-        </motion.header>
+        </motion.header> */}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

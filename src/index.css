@@ -142,22 +142,26 @@ body {
 }
 
 .ant-carousel .slick-dots li button {
-  background: #337ab7;
+  @apply bg-primary-light dark:bg-primary-dark;
   opacity: 0.4;
 }
 
 .ant-carousel .slick-dots li.slick-active button {
   opacity: 1;
-  background: #337ab7;
+  @apply bg-primary-light dark:bg-primary-dark;
 }
 
 /* For dark mode */
 .dark .ant-carousel .slick-dots li button {
-  background: #8299d6;
+  @apply bg-primary-light dark:bg-primary-dark;
 }
 
 .dark .ant-carousel .slick-dots li.slick-active button {
-  background: #8299d6;
+  @apply bg-primary-light dark:bg-primary-dark;
+}
+
+ul.slick-dots li.slick-active::after {
+  @apply !bg-primary-light dark:!bg-primary-dark;
 }
 
 /* Ensure cards have consistent height */

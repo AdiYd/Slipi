@@ -31,7 +31,7 @@ const Login: React.FC = () => {
 
   return (
     <div>
-    <div className="min-h-screen flex flex-col justify-center  items-center bg-background-light dark:bg-background-dark">
+    <div className="min-h-screen relative top-[-50px] flex flex-col justify-center  items-center bg-background-light dark:bg-background-dark">
       <div className='flex justify-center mb-6'>
         <ThemeToggle />
       </div>

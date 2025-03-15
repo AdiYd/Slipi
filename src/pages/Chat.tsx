@@ -146,8 +146,8 @@ const ChatPage: React.FC = () => {
                         <div
                           className={`inline-block p-3 max-w-[80%] rounded-2xl ${
                             message.role === 'user'
-                              ? 'bg-primary-light dark:bg-primary-dark text-white rounded-tr-none'
-                              : 'bg-gray-100 dark:bg-gray-700 rounded-tl-none'
+                              ? 'bg-primary-light dark:bg-primary-dark w-fit min-w-[100px] text-center text-white rounded-tr-none'
+                              : 'bg-gray-100 dark:bg-gray-700 w-fit min-w-[100px] text-center rounded-tl-none'
                           }`}
                         >
                           <div className="whitespace-pre-wrap break-words">

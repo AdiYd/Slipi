@@ -51,7 +51,7 @@ const Profile: React.FC = () => {
 
   return (
     <DashboardLayout>
-      <Card className="bg-card-light dark:bg-card-dark shadow-card dark:shadow-card-dark">
+      <div className="py-4 px-6">
         <h2 className="text-2xl font-bold text-text-light dark:text-text-dark mb-6">
           פרופיל משתמש
         </h2>
@@ -165,7 +165,7 @@ const Profile: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
-      </Card>
+      </div>
     </DashboardLayout>
   );
 };
