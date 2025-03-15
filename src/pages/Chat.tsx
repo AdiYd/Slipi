@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Empty, Typography, Space, Button, Badge, Input } from 'antd';
-import { MessageOutlined, SendOutlined } from '@ant-design/icons';
+import Icon, { MessageOutlined, SendOutlined } from '@ant-design/icons';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import { useTraining } from '../contexts/TrainingContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -59,7 +59,7 @@ const ChatPage: React.FC = () => {
   return (
     <DashboardLayout>
       {/* Make the container responsive */}
-      <div className="flex flex-col lg:flex-row h-[calc(100vh-200px)] gap-4">
+      <div className="flex flex-col lg:flex-row h-full gap-4">
         {/* Sidebar - full width on mobile, fixed width on desktop */}
         <motion.div 
           className="w-full lg:w-80 bg-white dark:bg-gray-800 rounded-lg p-4 overflow-y-auto"
@@ -96,7 +96,7 @@ const ChatPage: React.FC = () => {
                           {training.subtitle}
                         </Text>
                       </div>
-                      <Badge count={chatCount} className="ml-2 flex-shrink-0" />
+                      <Badge color='rgb(51, 122, 183)'  className='text-text-light dark:text-text-dark transition-transform duration-300 text-2xl' count={chatCount} />
                     </Button>
                   </motion.div>
                 );
@@ -111,7 +111,7 @@ const ChatPage: React.FC = () => {
         </motion.div>
 
         {/* Main chat area - full width on mobile */}
-        <Card className="flex-1 flex flex-col min-h-[500px] lg:min-h-0">
+        <Card className="flex-1 border-[1px]  flex h-full flex-col min-h-[500px] lg:min-h-0">
           <AnimatePresence mode="wait">
             {activeTrainingId ? (
               <motion.div
@@ -133,7 +133,7 @@ const ChatPage: React.FC = () => {
                 </div>
 
                 {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto mb-4 space-y-4 p-4">
+                <div className="flex-1 overflow-y-auto border-[0.9px] rounded-lg border-border-light dark:border-border-dark mb-4 space-y-4 p-4">
                   {currentChatHistory.length > 0 ? (
                     currentChatHistory.map((message, index) => (
                       <motion.div
@@ -146,8 +146,8 @@ const ChatPage: React.FC = () => {
                         <div
                           className={`inline-block p-3 max-w-[80%] rounded-2xl ${
                             message.role === 'user'
-                              ? 'bg-primary-light dark:bg-primary-dark w-fit min-w-[100px] text-center text-white rounded-tr-none'
-                              : 'bg-gray-100 dark:bg-gray-700 w-fit min-w-[100px] text-center rounded-tl-none'
+                              ? 'bg-primary-light dark:bg-primary-dark w-fit min-w-[100px] text-center text-white rounded-bl-none'
+                              : 'bg-gray-100 dark:bg-gray-700 w-fit min-w-[100px] text-center rounded-br-none'
                           }`}
                         >
                           <div className="whitespace-pre-wrap break-words">
@@ -177,6 +177,7 @@ const ChatPage: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <TextArea
                       value={newMessage}
+                      size='large'
                       onChange={e => setNewMessage(e.target.value)}
                       placeholder="כתוב/י הודעה..."
                       autoSize={{ minRows: 1, maxRows: 4 }}
@@ -190,6 +191,7 @@ const ChatPage: React.FC = () => {
                     />
                     <Button
                       type="primary"
+                      size='large'
                       icon={<SendOutlined rotate={180} />}
                       onClick={handleSendMessage}
                       className="flex-shrink-0 flex items-center justify-center"

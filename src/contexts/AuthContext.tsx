@@ -68,6 +68,32 @@ export const demoUser = {
   ]},
   {
     id: '2',
+    finished: true,
+    chatSession: [
+      {
+        role: 'user',
+        content: 'Hello',
+        timestamp: '2021-01-01T00:00:00.000Z'
+      },
+      {
+        role: 'assistant',
+        content: 'Whats your name?',
+        timestamp: '2021-01-01T00:00:00.000Z'
+      },
+      {
+        role: 'user',
+        content: 'My name is John Doe',
+        timestamp: '2021-01-01T00:00:00.000Z'
+      },
+      {
+        role: 'assistant',
+        content: 'Nice to meet you John Doe',
+        timestamp: '2021-01-01T00:00:00.000Z'
+      }
+    ]
+  },
+  {
+    id: '3',
     finished: false,
     chatSession: []
   }

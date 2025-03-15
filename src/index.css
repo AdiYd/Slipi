@@ -163,6 +163,9 @@ body {
 ul.slick-dots li.slick-active::after {
   @apply !bg-primary-light dark:!bg-primary-dark;
 }
+sub.ant-scroll-number ant-badge-count{ 
+  background-color: #000 !important;
+}
 
 /* Ensure cards have consistent height */
 .ant-carousel .slick-slide {

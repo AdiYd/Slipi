@@ -74,42 +74,68 @@ export const exampleTrainings = [
   }
 ];
 
-export const demoUser = {
-  id: 'demo',
-  fullName: 'ישראל ישראלי',
-  email: 'Israel@Israeli.co.il',
-  phone: '0541234567',
-  trainings: [{
-    id: '1',
-    finished: true,
-    chatSession: [{
-     role: 'user',
-     content: 'Hello',
-     timestamp: '2021-01-01T00:00:00.000Z'
-    },
-    {
-      role: 'assistant',
-      content: 'Hello',
-      timestamp: '2021-01-01T00:00:00.000Z'
-    },
-    {
-      role: 'user',
-      content: 'Hello',
-      timestamp: '2021-01-01T00:00:00.000Z'
-    },
-    {
-      role: 'assistant',
-      content: 'Hello',
-      timestamp: '2021-01-01T00:00:00.000Z'
-    }
-  ]},
-  {
-    id: '2',
-    finished: false,
-    chatSession: []
-  }
-]
-};
+// export const demoUser = {
+//   id: 'demo',
+//   fullName: 'ישראל ישראלי',
+//   email: 'Israel@Israeli.co.il',
+//   phone: '0541234567',
+//   trainings: [{
+//     id: '1',
+//     finished: true,
+//     chatSession: [{
+//      role: 'user',
+//      content: 'Hello',
+//      timestamp: '2021-01-01T00:00:00.000Z'
+//     },
+//     {
+//       role: 'assistant',
+//       content: 'Hello',
+//       timestamp: '2021-01-01T00:00:00.000Z'
+//     },
+//     {
+//       role: 'user',
+//       content: 'Hello',
+//       timestamp: '2021-01-01T00:00:00.000Z'
+//     },
+//     {
+//       role: 'assistant',
+//       content: 'Hello',
+//       timestamp: '2021-01-01T00:00:00.000Z'
+//     }
+//   ]},
+//   {
+//     id: '2',
+//     finished: true,
+//     chatSession: [
+//       {
+//         role: 'user',
+//         content: 'Hello',
+//         timestamp: '2021-01-01T00:00:00.000Z'
+//       },
+//       {
+//         role: 'assistant',
+//         content: 'Whats your name?',
+//         timestamp: '2021-01-01T00:00:00.000Z'
+//       },
+//       {
+//         role: 'user',
+//         content: 'My name is John Doe',
+//         timestamp: '2021-01-01T00:00:00.000Z'
+//       },
+//       {
+//         role: 'assistant',
+//         content: 'Nice to meet you John Doe',
+//         timestamp: '2021-01-01T00:00:00.000Z'
+//       }
+//     ]
+//   },
+//   {
+//     id: '3',
+//     finished: false,
+//     chatSession: []
+//   }
+// ]
+// };
 
 const Dashboard: React.FC = () => {
   const { trainings, loading, error, fetchTrainings } = useTraining();
@@ -319,7 +345,7 @@ const Dashboard: React.FC = () => {
             renderItem={training => (
               <List.Item>
                 <List.Item.Meta
-                  avatar={<CheckCircleOutlined className="text-success text-xl" />}
+                  avatar={<CheckCircleOutlined className="text-green-500 text-xl" />}
                   title={training.title}
                   description={
                     <div>
@@ -342,7 +368,7 @@ const Dashboard: React.FC = () => {
         transition={{ duration: 0.5, delay: 0.4 }}
         className="my-8"
       >
-        <Card className="card*">
+        <div className="card*">
           <Title level={3}>המוצרים שלנו</Title>
           <Row gutter={[16, 16]}>
             {exampleTrainings.map(product => (
@@ -359,13 +385,13 @@ const Dashboard: React.FC = () => {
               </Col>
             ))}
           </Row>
-        </Card>
+        </div>
       </motion.div>
 
       {/* Remaining Trainings Section */}
       <motion.div className="my-8">
         <Card className="card*">
-          <Title level={3}>הדרכות להשלמה</Title>
+          <Title level={3}>הדרכות שעדיין לא הושלמו</Title>
           <List
             dataSource={remainingTrainingsList}
             renderItem={training => (

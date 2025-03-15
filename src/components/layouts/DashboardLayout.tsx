@@ -85,7 +85,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Sider
         width={200}
         theme={theme}
-        className={`card* bg-background-light dark:bg-background-dark rounded-lg my-2 shadow-none border-none fixed h-screen
+        className={`card* bg-white/50 dark:bg-zinc-950/50 rounded-lg my-4 shadow-none border-none fixed h-screen backdrop-blur-lg
           ${isMobile ? 'z-50' : 'z-40'} 
           ${isMobile ? (collapsed ? '-right-[200px]' : 'right-0') : 'right-0'}
           transition-all duration-300`}
@@ -163,7 +163,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </motion.div>
       </Sider>
 
-      <Layout className={`transition-all duration-300 ${
+      <Layout className={`transition-all px-2 duration-300 ${
         !isMobile ? (collapsed ? 'mr-[80px]' : 'mr-[200px]') : 'mr-0'
       }`}>
         {/* <motion.header
@@ -190,7 +190,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="m-2 p-6 min-h-[280px] card* bg-white/50 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-zinc-950/50"
+          className="my-4 relative overflow-y-auto p-6 min-h-[280px] card* bg-white/50 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-zinc-950/50"
         >
           {children}
         </motion.div>
