@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Card, Typography, message } from 'antd';
+import { Form, Input, Button,  Typography, message } from 'antd';
 import { UserOutlined, LockOutlined, PhoneOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -33,7 +33,8 @@ const Signup: React.FC = () => {
         fullName: values.fullName,
         email: values.email,
         phone: values.phone,
-        password: values.password
+        password: values.password,
+        trainings: [],
       });
       message.success('נרשמת בהצלחה!');
       navigate('/dashboard');
@@ -43,14 +44,14 @@ const Signup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-background-light dark:bg-background-dark">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-white dark:bg-black">
     <div className='flex justify-center mb-6'>
       <ThemeToggle />
     </div>
-    {/* <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-orange-300/40 blur-[200px] z-0"/> */}
-    <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-orange-500/60  to-blue-600/40 blur-[200px] z-0"/>
+    <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/80  to-teal-300-300/50 blur-[200px] z-0"/>
+    <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-amber-500/80  to-pink-600/50 blur-[200px] z-0"/>
       
-    <Card className="w-[500px] border-[0.9px] border-gray-300 dark:border-gray-700 backdrop-blur-lg p-4 bg-gradient-to-br from-neutral-100/50 dark:from-neutral-900/50 to-white/50 dark:to-black/50">
+    <div className="w-[80%] max-w-[600px] max-sm:w-[90%] max-sm:p-4 rounded-card border-[0.9px] border-gray-500/20 backdrop-blur-lg p-8 !bg-gradient-to-br from-neutral-100/50 dark:from-neutral-900/50 to-white/50 dark:to-black/50">
         <Logo />
         <Title level={2} className="text-2xl font-bold text-center text-text-light dark:text-text-dark mb-8">
           הרשמה
@@ -146,7 +147,7 @@ const Signup: React.FC = () => {
               htmlType="submit" 
               block 
               size="large"
-              className="bg-primary-light hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary-light transition-colors duration-300"
+              className="bg-primary-light hover:bg-primary-dark dark:bg-primary-dark dark:hover:bg-primary-light transition-colors duration-300 mt-4"
             >
               הרשם
             </Button>
@@ -159,7 +160,7 @@ const Signup: React.FC = () => {
             </Link>
           </div>
         </Form>
-      </Card>
+    </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 interface Training {
   id: string;
-  finished: boolean;
+  completed: boolean;
   chatSession: ChatMessage[];
 }
 
@@ -24,8 +24,6 @@ interface User {
   email: string;
   phone: string;
   trainings: Training[];
-  chatSession: ChatMessage[];
-  finished: boolean;
 }
 
 interface AuthContextType {
@@ -36,15 +34,14 @@ interface AuthContextType {
   logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
-export const demoUser = {
-  id: 'demo',
+export const exampleUser = {
+  id: '1234',
   fullName: 'ישראל ישראלי',
   email: 'Israel@Israeli.co.il',
   phone: '0541234567',
   trainings: [{
     id: '1',
-    finished: true,
+    completed: true,
     chatSession: [{
      role: 'user',
      content: 'Hello',
@@ -52,23 +49,23 @@ export const demoUser = {
     },
     {
       role: 'assistant',
-      content: 'Hello',
+      content: 'Whats up?',
       timestamp: '2021-01-01T00:00:00.000Z'
     },
     {
       role: 'user',
-      content: 'Hello',
+      content: 'I have a question',
       timestamp: '2021-01-01T00:00:00.000Z'
     },
     {
       role: 'assistant',
-      content: 'Hello',
+      content: 'I can help you with that',
       timestamp: '2021-01-01T00:00:00.000Z'
     }
   ]},
   {
     id: '2',
-    finished: true,
+    completed: true,
     chatSession: [
       {
         role: 'user',
@@ -94,21 +91,24 @@ export const demoUser = {
   },
   {
     id: '3',
-    finished: false,
+    completed: false,
     chatSession: []
   }
 ]
 };
 
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     if (import.meta.env.VITE_NODE_ENV === 'development') {
-      login('demo', '');
+      login('', '');
       setLoading(false);
       return;
     }
@@ -137,19 +137,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
+      setLoading(true);
       const response = await axios.post('/api/auth/login', { email, password });
       const { token, user } = response.data;
       localStorage.setItem('authToken', token);
       setUser(user);
+      message.success('התחברת בהצלחה!');
+      return;
     } catch (error) {
-      if (email === 'demo') {
+      if (import.meta.env.VITE_NODE_ENV === 'development') {
         localStorage.setItem('authToken', 'demo');
-        setUser(demoUser);
+        setUser(exampleUser);
         message.success('התחברת בהצלחה!');
         navigate('/dashboard');
         return;
       }
       throw new Error('התחברות נכשלה');
+    } finally {
+      setLoading(false);
     }
   };
 

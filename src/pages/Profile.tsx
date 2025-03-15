@@ -1,11 +1,10 @@
 import React from 'react';
-import { Card, Form, Input, Button, Typography, message } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { UserOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import axios from 'axios';
 
-const { Title } = Typography;
 
 interface ProfileForm {
   fullName: string;

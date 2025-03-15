@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Statistic, Typography, Spin, Carousel, Button, Progress, List, Avatar } from 'antd';
 import { VideoCameraOutlined, ClockCircleOutlined, TrophyOutlined, LeftOutlined, RightOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { useTraining } from '../contexts/TrainingContext';
+import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
 import TrainingCard from '../components/TrainingCard';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,150 +11,22 @@ import '../index.css';
 
 const { Title } = Typography;
 
-export const exampleTrainings = [
-  {
-    id: '1',
-    title: 'ברוכים הבאים ל-Slipi',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'הכרת החברה, הערכים שלנו והחזון - כל מה שהופך אותנו למובילים בתחום השינה האיכותית.',
-    duration: 30,
-    difficulty: 'beginner',
-    category: 'מבוא',
-    imageUrl: 'https://picsum.photos/seed/welcome/200/300'
-  },
-  {
-    id: '2',
-    title: 'עולם השינה האיכותית',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'למידה מעמיקה על שלבי השינה, חשיבות המזרן המתאים, וכיצד שינה איכותית משפיעה על הבריאות.',
-    duration: 45,
-    difficulty: 'beginner',
-    category: 'ידע מקצועי',
-    imageUrl: 'https://picsum.photos/seed/sleep/200/300'
-  },
-  {
-    id: '3',
-    title: 'הכרת מוצרי החברה',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'סקירה מקיפה של קולקציית המוצרים שלנו: מזרנים, מיטות מתכווננות, כריות ואביזרי שינה.',
-    duration: 60,
-    difficulty: 'intermediate',
-    category: 'מוצרים',
-    imageUrl: 'https://picsum.photos/seed/products/200/300'
-  },
-  {
-    id: '4',
-    title: 'אמנות המכירה והשירות',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'טכניקות מתקדמות לזיהוי צרכי לקוח, בניית אמון והתאמת פתרון מושלם.',
-    duration: 75,
-    difficulty: 'intermediate',
-    category: 'מכירות',
-    imageUrl: 'https://picsum.photos/seed/sales/200/300'
-  },
-  {
-    id: '5',
-    title: 'פתרונות מותאמים אישית',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'כיצד להתאים פתרון שינה מושלם לכל לקוח: ניתוח צרכים, התמודדות עם אתגרי שינה ובחירת המוצר המתאים.',
-    duration: 90,
-    difficulty: 'advanced',
-    category: 'טכנולוגיה ומערכות',
-    imageUrl: 'https://picsum.photos/seed/solutions/200/300'
-  },
-  {
-    id: '6',
-    title: 'מצוינות בשירות',
-    subtitle: 'מבוא לשינה איכותית',
-    description: 'שירות לקוחות ברמה הגבוהה ביותר: טיפול במקרים מיוחדים, שירות לאחר מכירה ובניית נאמנות לקוחות.',
-    duration: 60,
-    difficulty: 'advanced',
-    category: 'שירות לקוחות',
-    imageUrl: 'https://picsum.photos/seed/service/200/300'
-  }
-];
-
-// export const demoUser = {
-//   id: 'demo',
-//   fullName: 'ישראל ישראלי',
-//   email: 'Israel@Israeli.co.il',
-//   phone: '0541234567',
-//   trainings: [{
-//     id: '1',
-//     finished: true,
-//     chatSession: [{
-//      role: 'user',
-//      content: 'Hello',
-//      timestamp: '2021-01-01T00:00:00.000Z'
-//     },
-//     {
-//       role: 'assistant',
-//       content: 'Hello',
-//       timestamp: '2021-01-01T00:00:00.000Z'
-//     },
-//     {
-//       role: 'user',
-//       content: 'Hello',
-//       timestamp: '2021-01-01T00:00:00.000Z'
-//     },
-//     {
-//       role: 'assistant',
-//       content: 'Hello',
-//       timestamp: '2021-01-01T00:00:00.000Z'
-//     }
-//   ]},
-//   {
-//     id: '2',
-//     finished: true,
-//     chatSession: [
-//       {
-//         role: 'user',
-//         content: 'Hello',
-//         timestamp: '2021-01-01T00:00:00.000Z'
-//       },
-//       {
-//         role: 'assistant',
-//         content: 'Whats your name?',
-//         timestamp: '2021-01-01T00:00:00.000Z'
-//       },
-//       {
-//         role: 'user',
-//         content: 'My name is John Doe',
-//         timestamp: '2021-01-01T00:00:00.000Z'
-//       },
-//       {
-//         role: 'assistant',
-//         content: 'Nice to meet you John Doe',
-//         timestamp: '2021-01-01T00:00:00.000Z'
-//       }
-//     ]
-//   },
-//   {
-//     id: '3',
-//     finished: false,
-//     chatSession: []
-//   }
-// ]
-// };
 
 const Dashboard: React.FC = () => {
-  const { trainings, loading, error, fetchTrainings } = useTraining();
+  const { trainings, loading, error } = useTraining();
   const { user } = useAuth();
   const carouselRef = React.useRef<any>(null);
   const navigate = useNavigate();
 
-  React.useEffect(() => {
-    fetchTrainings();
-  }, [fetchTrainings]);
   
   const allTrainings = trainings || exampleTrainings;
   
   const completedTrainingsList = allTrainings.filter(training => 
-    user?.trainings.find(ut => ut.id === training.id && ut.finished)
+    user?.trainings.find(ut => ut.id === training.id && ut.completed)
   );
 
   const remainingTrainingsList = allTrainings.filter(training => 
-    !user?.trainings.find(ut => ut.id === training.id && ut.finished)
+    !user?.trainings.find(ut => ut.id === training.id && ut.completed)
   );
 
   const completionPercentage = Math.round((completedTrainingsList.length / allTrainings.length) * 100);
@@ -231,7 +103,7 @@ const Dashboard: React.FC = () => {
     <DashboardLayout>
       <div className=" text-center items-center mt-4 mb-8">
         <Title level={2}>איזור אישי</Title>
-        <span className='text-textSecondary-light text-base dark:text-textSecondary-dark'>פה תוכלו למצוא את כל הדרכות שלכם,לשאול שאלות ולקבל תמיכה בכל שלב.</span>
+        <span className='text-textSecondary-light text-base dark:text-textSecondary-dark'>פה תוכלו למצוא את כל ההדרכות שלכם,לשאול שאלות ולקבל תמיכה בכל שלב.</span>
       </div>
 
       <Row gutter={[16, 16]}>

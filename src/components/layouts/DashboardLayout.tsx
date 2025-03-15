@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Typography } from 'antd';
+import { Layout, Menu, Button, Avatar } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
@@ -13,12 +13,12 @@ import {
 } from '@ant-design/icons';
 import ThemeToggle from '../ThemeToggle';
 import Logo from './Logo';
-import Title from 'antd/lib/typography/Title';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import '../../index.css';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import Title from 'antd/es/typography/Title';
 
-const { Header, Sider, Content } = Layout;
+const { Sider } = Layout;
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -31,6 +31,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const { theme } = useTheme();
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  
+  // Add animation controls for the header
+  const headerControls = useAnimation();
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollThreshold = 50; // Adjust this value as needed
 
   useEffect(() => {
     const checkMobile = () => {
@@ -41,6 +46,38 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Add scroll handler effect
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      
+      if (currentScrollY > lastScrollY && currentScrollY > scrollThreshold) {
+        // Scrolling down past threshold - slide header out
+        headerControls.start({
+          y: -100,
+          opacity: 1,
+          transition: { duration: 0.3, ease: "easeInOut" }
+        });
+      } else if (currentScrollY < lastScrollY || currentScrollY <= scrollThreshold) {
+        // Scrolling up or within threshold - slide header in
+        headerControls.start({
+          y: 0,
+          opacity: 1,
+          transition: { duration: 0.3, ease: "easeInOut" }
+        });
+      }
+      
+      setLastScrollY(currentScrollY);
+    };
+    
+    // Add passive event listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [lastScrollY, headerControls]);
 
   const menuItems = [
     {
@@ -79,13 +116,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
   return (
     <Layout className="min-h-screen z-10">
-      <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/60  to-amber-400/40 blur-[200px] z-0"/>
-      <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-red-500/60  to-amber-400/40 blur-[200px] z-0"/>
+      <div className="fixed top-[-130px] right-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-teal-500/40  to-amber-400/20 blur-[200px] z-0"/>
+      <div className="fixed bottom-[-130px] left-[-210px] overflow-hidden w-[40vw] max-sm:w-[50vw] h-[40vh] max-sm:h-2/3 rounded-full bg-gradient-to-r filter from-red-500/40  to-amber-400/20 blur-[200px] z-0"/>
 
       <Sider
         width={200}
         theme={theme}
-        className={`card* bg-white/50 dark:bg-zinc-950/50 rounded-lg my-4 shadow-none border-none fixed h-screen backdrop-blur-lg
+        className={`card* bg-white/90 dark:bg-neutral-900/90 rounded-lg my-4 shadow-none border-none fixed h-[fill-available] backdrop-blur-lg
           ${isMobile ? 'z-50' : 'z-40'} 
           ${isMobile ? (collapsed ? '-right-[200px]' : 'right-0') : 'right-0'}
           transition-all duration-300`}
@@ -103,8 +140,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           className="h-full flex flex-col"
         >
           <div className="flex-1">
-          <div className="h-16 mt-4 flex items-center justify-between px-4">
-              <div className="h-8 flex-1 bg-transparent dark:bg-black/20 rounded" />
+            <div className="h-16 mt-4 flex items-center justify-between px-4">
+              {!isMobile &&
+              <div 
+              onClick={() => setCollapsed(!collapsed)}
+              className="h-6 flex-1 bg-gray-200 cursor-pointer dark:bg-black rounded" />}
               {(!isMobile || (isMobile && !collapsed)) && (
                 <Button
                   title={collapsed ? 'הצג תפריט' : 'הסתר תפריט'}
@@ -114,25 +154,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <Icon icon='ic:outline-double-arrow' className='text-text-light rotate-180 transition-transform duration-300 dark:text-text-dark text-2xl' />
                   }
                   onClick={() => setCollapsed(!collapsed)}
-                  className="text-text-light dark:text-text-dark z-50 ml-2"
+                  className="text-text-light mx-auto dark:text-text-dark z-50 ml-2"
                 />
               )}
               </div>
-              {isMobile && ( <div className=' items-center justify-center'>
-                
-                    <Button
-                      type="text"
-                      icon={<MenuOutlined />}
-                      onClick={() => setCollapsed(!collapsed)}
-                      className="relative self-center ml-4 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
-                    />
-              </div>)}
+          
             <div className='flex flex-col items-center justify-center '>
-              <Logo />
-              {!isMobile && !collapsed &&
+              <Title level={5} className='w-full text-center' >תפריט</Title>
+              {/* {!isMobile && !collapsed &&
                <span className='w-full text-base text-center my-2 self-center' >
                     שלום, {user?.fullName}
-              </span>}
+              </span>} */}
             </div>
             <Menu
               theme={theme}
@@ -166,17 +198,21 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Layout className={`transition-all px-2 duration-300 ${
         !isMobile ? (collapsed ? 'mr-[80px]' : 'mr-[200px]') : 'mr-0'
       }`}>
-        {/* <motion.header
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className={`p-0 flex z-40 min-h-[60px] flex-row-reverse justify-between items-center align-middle card px-6 rounded-none shadow-none border-none`}
+        <motion.header
+          initial={{ y: 0, opacity: 1 }}
+          animate={headerControls}
+          className={`p-0 flex w-[fill-available] mt-4 ml-2 backdrop-blur-xl fixed z-40 min-h-[60px] flex-row-reverse justify-between items-center align-middle bg-white/85 dark:bg-neutral-900/90 px-6 rounded-lg`}
         >
-          <Logo />
+          <div className='relative -top-1'>
+            <Logo />
+          </div>
           <Title level={5} className='w-full !mb-0 self-center' >
             שלום, {user?.fullName}
           </Title>
-          {isMobile && (
+          <Avatar 
+          onClick={() => navigate('/profile')}  
+          size={27} className='bg-primary-light cursor-pointer ml-2 min-w-7 min-h-7 dark:bg-primary-dark' icon={<UserOutlined />} />
+          {isMobile && (            
             <Button
               type="text"
               icon={<MenuOutlined />}
@@ -184,13 +220,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               className="relative self-center ml-4 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
             />
           )}
-        </motion.header> */}
+        </motion.header>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="my-4 relative overflow-y-auto p-6 min-h-[280px] card* bg-white/50 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-zinc-950/50"
+          className="my-4 relative mt-[84px] overflow-y-auto p-6 min-h-[280px] bg-white/40 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-gray-950/40"
         >
           {children}
         </motion.div>

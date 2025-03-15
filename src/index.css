@@ -6,7 +6,7 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
+  min-height: 100vh;
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -137,8 +137,9 @@ body {
 }
 
 /* Carousel customization */
-.ant-carousel .slick-dots {
-  bottom: -30px;
+
+ul.slick-dots {
+  bottom: 0px !important;
 }
 
 .ant-carousel .slick-dots li button {
@@ -150,6 +151,7 @@ body {
   opacity: 1;
   @apply bg-primary-light dark:bg-primary-dark;
 }
+
 
 /* For dark mode */
 .dark .ant-carousel .slick-dots li button {
@@ -180,4 +182,27 @@ sub.ant-scroll-number ant-badge-count{
 
 .ant-carousel .slick-slide > div {
   height: 100%;
-} 
+}
+
+
+input {
+  min-height: 35px !important;
+  align-content: center !important;
+}
+
+.chat-container {
+  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+  /* background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); */
+  background-size: contain;
+  background-position: fixed;
+  /* height: 500px; Adjust as needed */
+  overflow-y: auto;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: sans-serif; /* WhatsApp font */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  position: relative;
+}

@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Space, Divider, Progress, Typography, Input, Tag, Row, Col, Card, List, Avatar } from 'antd';
+import { Button, Space, Typography, Input, Row, Col, Card, List, Avatar } from 'antd';
 import { 
   ArrowRightOutlined, 
   SendOutlined, 
-  ClockCircleOutlined,
   WhatsAppOutlined,
   MailOutlined,
   PhoneOutlined,
   TeamOutlined,
-  CheckCircleOutlined,
   BookOutlined,
   StarOutlined,
   VideoCameraOutlined,
@@ -17,25 +15,24 @@ import {
   LinkedinOutlined
 } from '@ant-design/icons';
 import DashboardLayout from '../components/layouts/DashboardLayout';
-import { useTraining } from '../contexts/TrainingContext';
-import { difficultyColors, difficultyLabels, categoryColors } from './Trainings';
-import { exampleTrainings } from './Dashboard';
+import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
 import { motion } from 'framer-motion';
-import { Icon } from '@iconify/react';
+import DocxRenderer from '../components/DocxRenderer';
+import '../index.css';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 
-interface Training {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  duration: number;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
-  category: string;
-  imageUrl: string;
-}
+// interface Training {
+//   id: string;
+//   title: string;
+//   subtitle: string;
+//   description: string;
+//   duration: number;
+//   difficulty: 'beginner' | 'intermediate' | 'advanced';
+//   category: string;
+//   imageUrl: string;
+// }
 
 const TrainingDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -43,7 +40,7 @@ const TrainingDetails: React.FC = () => {
   const { trainings } = useTraining();
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
-  const [sectionCompleted, setSectionCompleted] = useState(false);
+
 
   // Find the current training
   const training = (trainings || exampleTrainings)?.find(t => t.id === id) || null;
@@ -62,10 +59,6 @@ const TrainingDetails: React.FC = () => {
     );
   }
 
-  const handleComplete = () => {
-    setSectionCompleted(true);
-    // Here you would typically make an API call to update the user's progress
-  };
 
   const handleSendMessage = () => {
     if (!chatMessage.trim()) return;
@@ -88,7 +81,7 @@ const TrainingDetails: React.FC = () => {
   return (
     <DashboardLayout>
       <motion.div 
-        className="max-w-4xl mx-auto p-4"
+        className="max-w-7xl mx-auto p-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -96,115 +89,18 @@ const TrainingDetails: React.FC = () => {
    
 
         {/* Main Content */}
-        <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 mb-8 shadow-sm"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
+        <motion.div
+        className="w-fit h-fit mx-auto my-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.5 }}
         >
-          {/* Training Header Section */}
-          <div className="mb-8">
-            <Title level={2} className="mb-2">{training.title}</Title>
-            <Title level={4} className="text-gray-500 mt-0 mb-4">{training.subtitle}</Title>
-            
-            <Space className="mb-4" wrap>
-              <Tag 
-                bordered={false}
-                style={{ backgroundColor: difficultyColors[training.difficulty] }}
-                className="text-white flex items-center gap-1"
-              >
-                <Icon icon="material-symbols:trending-up" />
-                {difficultyLabels[training.difficulty]}
-              </Tag>
-              <Tag 
-                color={categoryColors[training.category]}
-                bordered={false}
-                className="flex items-center gap-1"
-              >
-                <Icon icon="material-symbols:category" />
-                {training.category}
-              </Tag>
-              <Tag 
-                color="cyan"
-                bordered={false}
-                className="flex items-center gap-1"
-              >
-                <ClockCircleOutlined />
-                {training.duration} דקות
-              </Tag>
-            </Space>
-          </div>
-
-          {/* Training Image */}
-          <motion.div 
-            className="mb-6"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
-          >
-            <img
-              src={training.imageUrl}
-              alt={training.title}
-              className="w-full h-64 object-cover rounded-lg shadow-md"
-            />
-          </motion.div>
-
-          {/* Training Description */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
-          >
-            <Title level={4} className="mb-4">תיאור ההדרכה</Title>
-            <Paragraph className="text-lg mb-6 leading-relaxed">
-              {training.description}
-            </Paragraph>
-          </motion.div>
-
-          {/* Training Content */}
-          <div className="prose dark:prose-invert max-w-none">
-            {/* Add your training content here */}
-            {/* This could include text, images, videos, etc. */}
-          </div>
-
-          {/* Progress and Completion */}
-          <motion.div 
-            className="mt-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
-          >
-            <Progress 
-              percent={sectionCompleted ? 100 : 0}
-              strokeColor={{ 
-                '0%': difficultyColors[training.difficulty],
-                '100%': '#28a745' 
-              }}
-              className="mb-4"
-            />
-            <Button
-              type="primary"
-              size="large"
-              block
-              onClick={handleComplete}
-              disabled={sectionCompleted}
-              className={`${sectionCompleted ? 'bg-success' : ''} h-12`}
-            >
-              {sectionCompleted ? (
-                <span className="flex items-center justify-center gap-2">
-                  <CheckCircleOutlined />
-                  סיימת את ההדרכה!
-                </span>
-              ) : (
-                'סיים הדרכה'
-              )}
-            </Button>
-          </motion.div>
+            <DocxRenderer />
         </motion.div>
 
         {/* Chat Section */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm"
+          className="card rounded-lg p-6 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -212,7 +108,7 @@ const TrainingDetails: React.FC = () => {
           <Title level={4} className="mb-4">שאלות ותשובות</Title>
           
           {/* Chat Messages */}
-          <div className="max-h-[500px] min-h-24 overflow-y-auto border-[1px] px-4 py-8 border-gray-300 dark:border-gray-700 rounded-lg mb-4 space-y-4">
+          <div className="max-h-[500px] chat-container min-h-24 overflow-y-auto border-[1px] px-4 py-8 border-gray-300 dark:border-gray-700 rounded-lg mb-4 space-y-4">
             {chatMessages.length === 0 ? (
               <div className="text-center text-gray-500 py-8">
                 אין הודעות עדיין. שאל/י שאלה להתחיל שיחה
@@ -263,7 +159,7 @@ const TrainingDetails: React.FC = () => {
 
         {/* Related Trainings */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm my-8"
+          className="card rounded-lg p-6 shadow-sm my-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.5 }}
@@ -298,7 +194,7 @@ const TrainingDetails: React.FC = () => {
 
         {/* Key Learning Points */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm my-8"
+          className="card rounded-lg p-6 shadow-sm my-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.5 }}
@@ -331,7 +227,7 @@ const TrainingDetails: React.FC = () => {
 
         {/* Support Section */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm my-8"
+          className="card rounded-lg p-6 shadow-sm my-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.5 }}
@@ -358,7 +254,7 @@ const TrainingDetails: React.FC = () => {
 
         {/* Additional Resources */}
         <motion.div 
-          className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm my-8"
+          className="card rounded-lg p-6 shadow-sm my-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8, duration: 0.5 }}

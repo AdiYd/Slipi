@@ -1,14 +1,13 @@
 import React from 'react';
-import { Row, Col, Typography, Spin, Select, Input, Tag, Space } from 'antd';
+import { Row, Col, Typography, Spin, Input, Tag, Space } from 'antd';
 import { SearchOutlined, BookOutlined } from '@ant-design/icons';
-import { useTraining } from '../contexts/TrainingContext';
+import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
 import TrainingCard from '../components/TrainingCard';
 import DashboardLayout from '../components/layouts/DashboardLayout';
-import { exampleTrainings } from './Dashboard';
 
 const { Title } = Typography;
 const { Search } = Input;
-const { Option } = Select;
+
 
 export const categoryColors: Record<string, string> = {
   'מבוא לחברה': 'magenta',
@@ -45,14 +44,11 @@ export  const difficulties = [
 ];
 
 const Trainings: React.FC = () => {
-  const { trainings, loading, error, fetchTrainings } = useTraining();
+  const { trainings, loading, error } = useTraining();
   const [searchText, setSearchText] = React.useState('');
   const [selectedDifficulties, setSelectedDifficulties] = React.useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>([]);
 
-  React.useEffect(() => {
-    fetchTrainings();
-  }, [fetchTrainings]);
 
   const handleDifficultyToggle = (difficulty: string) => {
     setSelectedDifficulties(prev => 
@@ -101,7 +97,7 @@ const Trainings: React.FC = () => {
             <Tag
               key={value}
               color={!selectedDifficulties.includes(value) ? 'default' : color}
-              className="cursor-pointer text-xs py-1 px-3 rounded-full hover:scale-105 transition-transform duration-300"
+              className="cursor-pointer text-xs py-1 px-3 rounded-full transition-transform duration-300"
               onClick={() => handleDifficultyToggle(value)}
             >
               {label}
@@ -117,7 +113,7 @@ const Trainings: React.FC = () => {
             <Tag
               key={category}
               color={!selectedCategories.includes(category) ? 'default' : categoryColors[category]}
-              className="cursor-pointer text-xs py-1 px-3 rounded-full hover:scale-105 transition-transform duration-300"
+              className="cursor-pointer text-xs py-1 px-3 rounded-full transition-transform duration-300"
               onClick={() => handleCategoryToggle(category)}
             >
               {category}

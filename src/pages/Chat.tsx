@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
-import { Card, Empty, Typography, Space, Button, Badge, Input } from 'antd';
-import Icon, { MessageOutlined, SendOutlined } from '@ant-design/icons';
+import { Card, Empty, Typography, Button, Badge, Input } from 'antd';
+import  { MessageOutlined, SendOutlined } from '@ant-design/icons';
 import DashboardLayout from '../components/layouts/DashboardLayout';
-import { useTraining } from '../contexts/TrainingContext';
+import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
 import { useAuth } from '../contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
-import { exampleTrainings } from './Dashboard';
+
+import WordToHtml from '../components/DocxReader';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
 
-interface ChatMessage {
-  role: 'user' | 'assistant';
-  content: string;
-  timestamp: string;
-}
+// interface ChatMessage {
+//   role: 'user' | 'assistant';
+//   content: string;
+//   timestamp: string;
+// }
 
 const ChatPage: React.FC = () => {
   const { trainings } = useTraining();
@@ -38,18 +39,18 @@ const ChatPage: React.FC = () => {
     
     // Here you would typically make an API call to your chatbot service
     // For now, we'll just add the message to the UI
-    const newUserMessage = {
-      role: 'user' as const,
-      content: newMessage,
-      timestamp: new Date().toISOString()
-    };
+    // const newUserMessage = {
+    //   role: 'user' as const,
+    //   content: newMessage,
+    //   timestamp: new Date().toISOString()
+    // };
 
     // Simulate bot response
-    const botResponse = {
-      role: 'assistant' as const,
-      content: 'תודה על ההודעה! אני אשמח לעזור לך. האם תוכל/י לפרט יותר?',
-      timestamp: new Date().toISOString()
-    };
+    // const botResponse = {
+    //   role: 'assistant' as const,
+    //   content: 'תודה על ההודעה! אני אשמח לעזור לך. האם תוכל/י לפרט יותר?',
+    //   timestamp: new Date().toISOString()
+    // };
 
     // Update chat history (in a real app, this would be handled by your backend)
     // For now, we're just simulating the update
@@ -58,11 +59,14 @@ const ChatPage: React.FC = () => {
 
   return (
     <DashboardLayout>
+      <div className='flex flex-col my-8 gap-4'>
+        <WordToHtml />
+      </div>
       {/* Make the container responsive */}
-      <div className="flex flex-col lg:flex-row h-full gap-4">
+      <div className="flex flex-col lg:flex-row h-fit min-h-[400px] pb-4 gap-4">
         {/* Sidebar - full width on mobile, fixed width on desktop */}
         <motion.div 
-          className="w-full lg:w-80 bg-white dark:bg-gray-800 rounded-lg p-4 overflow-y-auto"
+          className="w-full lg:w-80 bg-white dark:bg-zinc-900/80 rounded-lg p-4 overflow-y-auto"
           initial={{ x: -20, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.3 }}
@@ -79,20 +83,30 @@ const ChatPage: React.FC = () => {
                 return (
                   <motion.div
                     key={training.id}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    // whileHover={{ scale: 1.02 }}
+                    // whileTap={{ scale: 0.98 }}
                   >
                     <Button
                       type={activeTrainingId === training.id ? 'primary' : 'default'}
                       block
-                      onClick={() => setActiveTrainingId(training.id)}
+                      onClick={() => setActiveTrainingId(p => p === training.id ? null : training.id)}
                       className="text-right h-auto py-2 flex items-center justify-between"
                     >
-                      <div className="flex flex-col items-start overflow-hidden">
-                        <Text strong className="truncate w-full">
-                          {training.title}
+                      <div 
+                      className="flex flex-col items-start overflow-hidden">
+                        <Text 
+                          style={{
+                            color: activeTrainingId === training.id ? 'white' : 'inherit',
+                          }}
+                        strong className="truncate w-full">
+                          {training.title} 
                         </Text>
-                        <Text type="secondary" className="text-sm truncate w-full">
+                        <Text 
+                          style={{
+                            color: activeTrainingId === training.id ? 'white' : 'inherit',
+                            opacity: activeTrainingId === training.id ? 0.7 : 1,
+                          }}
+                        type="secondary" className="text-sm truncate w-full">
                           {training.subtitle}
                         </Text>
                       </div>
@@ -111,7 +125,7 @@ const ChatPage: React.FC = () => {
         </motion.div>
 
         {/* Main chat area - full width on mobile */}
-        <Card className="flex-1 border-[1px]  flex h-full flex-col min-h-[500px] lg:min-h-0">
+        <Card className="flex-1 border-[1px]  flex h-auto flex-col min-h-[500px] lg:min-h-0">
           <AnimatePresence mode="wait">
             {activeTrainingId ? (
               <motion.div
@@ -133,7 +147,7 @@ const ChatPage: React.FC = () => {
                 </div>
 
                 {/* Chat Messages */}
-                <div className="flex-1 overflow-y-auto border-[0.9px] rounded-lg border-border-light dark:border-border-dark mb-4 space-y-4 p-4">
+                <div className="flex-1 chat-container overflow-y-auto border-[0.9px] rounded-lg border-border-light dark:border-border-dark mb-4 space-y-4 p-4">
                   {currentChatHistory.length > 0 ? (
                     currentChatHistory.map((message, index) => (
                       <motion.div
@@ -146,8 +160,8 @@ const ChatPage: React.FC = () => {
                         <div
                           className={`inline-block p-3 max-w-[80%] rounded-2xl ${
                             message.role === 'user'
-                              ? 'bg-primary-light dark:bg-primary-dark w-fit min-w-[100px] text-center text-white rounded-bl-none'
-                              : 'bg-gray-100 dark:bg-gray-700 w-fit min-w-[100px] text-center rounded-br-none'
+                              ? 'bg-primary-light/80 dark:bg-primary-dark/80 backdrop-blur-sm w-fit min-w-[100px] text-center text-white rounded-bl-none'
+                              : 'bg-gray-100/80 dark:bg-gray-700/80 backdrop-blur-sm w-fit min-w-[100px] text-center rounded-br-none'
                           }`}
                         >
                           <div className="whitespace-pre-wrap break-words">

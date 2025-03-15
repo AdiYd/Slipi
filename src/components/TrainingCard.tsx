@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, Tag } from 'antd';
 import { ClockCircleOutlined, BookOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
-import { categoryColors, difficultyColors, difficultyLabels } from '../pages/Trainings';
+import {  difficultyColors, difficultyLabels } from '../pages/Trainings';
 import { motion } from 'framer-motion';
 
 interface TrainingCardProps {
@@ -34,7 +34,7 @@ const TrainingCard: React.FC<TrainingCardProps> = ({
 
   return (
     <motion.div
-      whileHover={{ scale: 1.02 }}
+      // whileHover={{ scale: 1.02 }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
