@@ -127,6 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (import.meta.env.VITE_NODE_ENV === 'development') {
         // In development, use example user
         await new Promise(resolve => setTimeout(resolve, 1000));
+        
         setUser(exampleUser);
         navigate('/dashboard');
       }
@@ -151,6 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // In development, use example user
         await new Promise(resolve => setTimeout(resolve, 1000));
         setUser(exampleUser);
+        localStorage.setItem('authToken', 'demo-token');
         navigate('/dashboard');
       } else {
         setError('Login failed. Please check your credentials.');
@@ -181,7 +183,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (import.meta.env.VITE_NODE_ENV === 'development') {
         // In development, simulate API call
         await new Promise(resolve => setTimeout(resolve, 1000));
-        
+        console.log('userData', userData);
         setUser(userData);
       } else {
         const response = await axios.post('/api/auth/update', userData);

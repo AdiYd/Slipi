@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Menu, Button, Avatar } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Layout, Menu, Button, Avatar, Typography } from 'antd';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import {
@@ -17,35 +17,27 @@ import { Icon } from '@iconify/react/dist/iconify.js';
 import '../../index.css';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import Title from 'antd/es/typography/Title';
-
+import { useMediaQuery } from 'react-responsive';
 const { Sider } = Layout;
+const { Text } = Typography;
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme } = useTheme();
   const [collapsed, setCollapsed] = useState(true);
-  const [isMobile, setIsMobile] = useState(false);
-  
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   // Add animation controls for the header
   const headerControls = useAnimation();
   const [lastScrollY, setLastScrollY] = useState(0);
   const scrollThreshold = 50; // Adjust this value as needed
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 769);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   // Add scroll handler effect
   useEffect(() => {
@@ -140,11 +132,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           className="h-full flex flex-col"
         >
           <div className="flex-1">
-            <div className="h-16 mt-4 flex items-center justify-between px-4">
-              {!isMobile &&
-              <div 
+            <div className="h-16 mt-4 flex items-center justify-between px-4">        
+              {/* <div 
               onClick={() => setCollapsed(!collapsed)}
-              className="h-6 flex-1 bg-gray-200 cursor-pointer dark:bg-black rounded" />}
+              className="h-6 flex-1 bg-gray-200 cursor-pointer dark:bg-black rounded" /> */}
+
               {(!isMobile || (isMobile && !collapsed)) && (
                 <Button
                   title={collapsed ? 'הצג תפריט' : 'הסתר תפריט'}
@@ -198,35 +190,36 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <Layout className={`transition-all px-2 duration-300 ${
         !isMobile ? (collapsed ? 'mr-[80px]' : 'mr-[200px]') : 'mr-0'
       }`}>
+       {!id && !isMobile &&
         <motion.header
           initial={{ y: 0, opacity: 1 }}
           animate={headerControls}
-          className={`p-0 flex w-[fill-available] mt-4 ml-2 backdrop-blur-xl fixed z-40 min-h-[60px] flex-row-reverse justify-between items-center align-middle bg-white/85 dark:bg-neutral-900/90 px-6 rounded-lg`}
+          className={`p-0 flex w-[fill-available] mt-4 ml-2 backdrop-blur-xl fixed z-40 min-h-[60px] flex-row-reverse justify-between items-center align-middle bg-white/85 dark:bg-neutral-900/90 px-6 max-sm:px-2 rounded-lg`}
         >
           <div className='relative -top-1'>
             <Logo />
           </div>
-          <Title level={5} className='w-full !mb-0 self-center' >
+          <Text  style={{fontSize: '0.8rem'}} className='w-full font-semibold !mb-0 self-center' >
             שלום, {user?.fullName}
-          </Title>
+          </Text>
           <Avatar 
           onClick={() => navigate('/profile')}  
-          size={27} className='bg-primary-light cursor-pointer ml-2 min-w-7 min-h-7 dark:bg-primary-dark' icon={<UserOutlined />} />
+          size={27} className='bg-primary-light cursor-pointer ml-3 min-w-7 min-h-7 dark:bg-primary-dark' icon={<UserOutlined />} />
           {isMobile && (            
             <Button
               type="text"
-              icon={<MenuOutlined />}
+              icon={<MenuOutlined className='px-2' />}
               onClick={() => setCollapsed(!collapsed)}
-              className="relative self-center ml-4 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
+              className="relative self-center ml-2 bg-background-light dark:bg-background-dark z-50 text-text-light dark:text-text-dark"
             />
           )}
-        </motion.header>
+        </motion.header>}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
-          className="my-4 relative mt-[84px] overflow-y-auto p-6 min-h-[280px] bg-white/40 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-gray-950/40"
+          className={`my-4 relative ${(id && !isMobile) ? '' : 'mt-[84px]'} overflow-y-auto p-6 max-sm:p-2 min-h-[280px] bg-white/40 backdrop-blur-xl shadow-none border-none rounded-lg dark:bg-gray-950/40`}
         >
           {children}
         </motion.div>

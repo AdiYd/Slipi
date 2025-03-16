@@ -149,7 +149,7 @@ const Trainings: React.FC = () => {
       <div className="flex items-center gap-3 mb-6">
         <BookOutlined className="text-2xl text-primary-light dark:text-primary-dark" />
         <h2 className="text-2xl font-bold text-text-light dark:text-text-dark m-0">
-          מרכז למידה
+          מרכז הכשרה
         </h2>
       </div>
 

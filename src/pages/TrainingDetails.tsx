@@ -25,7 +25,8 @@ import DocxRenderer from '../components/DocxRenderer';
 import '../index.css';
 import DocxConverter from '../components/DocxConverter';
 import axios from 'axios';
-
+import { useMediaQuery } from 'react-responsive';
+import { RxDoubleArrowLeft, RxDoubleArrowRight } from 'react-icons/rx';
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -47,9 +48,10 @@ const TrainingDetails: React.FC = () => {
   const { trainings } = useTraining();
   const { user, updateUser } = useAuth();
   const [chatMessage, setChatMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
+  const [chatMessages, setChatMessages] = useState<Array<{ role: string; content: string; timestamp: string }>>([]);
   const [completionProgress, setCompletionProgress] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
+  const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
   
   useEffect(() => {
     // Reset progress
@@ -59,6 +61,8 @@ const TrainingDetails: React.FC = () => {
     } else {
       setCompletionProgress(0);
     }
+    // Setting message to the chat
+    setChatMessages(user?.trainings?.find(t => t.id === id)?.chatSession || []);
   }, [user, id]);
 
   // Find the current training and adjacent trainings
@@ -95,7 +99,7 @@ const TrainingDetails: React.FC = () => {
     if (!chatMessage.trim()) return;
 
     // Add user message
-    setChatMessages(prev => [...prev, { text: chatMessage, isUser: true }]);
+    setChatMessages(prev => [...prev, { role: 'user', content: chatMessage, timestamp: new Date().toISOString() }]);
 
     let chatbotResponse = '';
     try {
@@ -110,10 +114,11 @@ const TrainingDetails: React.FC = () => {
     // For now, we'll simulate a response
     setTimeout(() => {
       setChatMessages(prev => [...prev, {
-        text: chatbotResponse,
-        isUser: false
+        role: 'assistant',
+        content: chatbotResponse,
+        timestamp: new Date().toISOString()
       }]);
-    }, 1000);
+    }, 500);
 
     let updatedUser = user;
     const isTrainingExists = user?.trainings.find(t => t.id === training.id);
@@ -125,22 +130,25 @@ const TrainingDetails: React.FC = () => {
       });
     }
 
-    updatedUser?.trainings.map(t => 
-      t.id === training.id ? ({ ...t, 
-        chatSession: [...t.chatSession, {
-        role: 'user',
-        content: chatMessage,
-        timestamp: new Date().toISOString()
-      },
-      {
-        role: 'assistant',
-        content: chatbotResponse,
-        timestamp: new Date().toISOString()
-      }
-      ] }) : t
-    ) ;
-    console.log('updatedTrainings', updatedUser);
-    
+    const updatedTrainings = updatedUser?.trainings?.map(t => 
+      t.id === training.id ? (
+        { ...t, 
+          chatSession: [...t.chatSession, {
+          role: 'user',
+          content: chatMessage,
+          timestamp: new Date().toISOString()
+        },
+        {
+          role: 'assistant',
+          content: chatbotResponse,
+          timestamp: new Date().toISOString()
+        }] 
+      }) : t
+    ) || [];
+    console.log('updatedTrainings', updatedTrainings);
+    if (updatedUser) {
+      updatedUser.trainings = updatedTrainings;
+    }
     
     await updateUser(updatedUser);
 
@@ -207,7 +215,7 @@ const TrainingDetails: React.FC = () => {
   return (
     <DashboardLayout>
       <motion.div 
-        className="max-w-7xl mx-auto p-4"
+        className="max-w-7xl mx-auto p-4 max-sm:p-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -215,16 +223,16 @@ const TrainingDetails: React.FC = () => {
   
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mb-4">
+        <div className="relative items-center mb-4">
           {prevTraining && (
             <Button
               type="default"
               size="small"
-              icon={<ArrowRightOutlined />}
+              icon={<RxDoubleArrowRight />}
               onClick={() => navigate(`/trainings/${prevTraining.id}`)}
-              className="flex items-center gap-1 text-primary-light hover:text-primary-dark"
+              className="float-start z-20 items-center gap-1 text-primary-light hover:text-primary-dark"
             >
-              להדרכה הקודמת
+              {isMobile ? 'הקודם' : 'להדרכה הקודמת'}
             </Button>
           )}
           {nextTraining && (
@@ -232,17 +240,18 @@ const TrainingDetails: React.FC = () => {
               type="default"
               size="small"
               onClick={() => navigate(`/trainings/${nextTraining.id}`)}
-              className="flex items-center gap-1 text-primary-light hover:text-primary-dark"
+              className=" float-end z-20 items-center gap-1 text-primary-light hover:text-primary-dark"
             >
-              להדרכה הבאה
-              <ArrowLeftOutlined />
+              {isMobile ? 'הבא' : 'להדרכה הבאה'}
+              <RxDoubleArrowLeft />
             </Button>
           )}
         </div>
+        <Title level={2} className="relative text-center -top-2 z-10">הדרכה {id}</Title>
 
         {/* Main Content */}
         <motion.div
-          className="w-full h-fit mx-auto my-8 relative"
+          className="w-full h-fit mx-auto mb-8 mt-12 relative"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -270,7 +279,7 @@ const TrainingDetails: React.FC = () => {
           <Title level={5} className="mb-4">{training.subtitle}</Title>
           <p className="mb-4">{training.description}</p>
           {training.fileUrl ? 
-            <DocxConverter fileUrl={training.fileUrl} />
+            <DocxConverter className='overflow-x-auto max-w-[100%]' fileUrl={training.fileUrl} />
             :
             <DocxRenderer />
           }
@@ -278,7 +287,7 @@ const TrainingDetails: React.FC = () => {
 
         {/* Chat Section */}
         <motion.div 
-          className="card rounded-lg p-6 shadow-sm"
+          className="card rounded-lg p-6 max-sm:p-2 shadow-sm"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -295,16 +304,16 @@ const TrainingDetails: React.FC = () => {
               chatMessages.map((message, index) => (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, x: message.isUser ? 20 : -20 }}
+                  initial={{ opacity: 0, x: message.role === 'user' ? 20 : -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
-                  className={`p-3 max-w-[80%] ${
-                    message.isUser
-                      ? 'bg-primary-light dark:bg-primary-dark ml-auto w-fit rounded-t-2xl rounded-l-2xl text-white'
-                      : 'bg-gray-100 dark:bg-gray-700 mr-auto w-fit rounded-t-2xl rounded-r-2xl'
+                  className={`p-3 w-fit max-w-[80%] ${
+                    message.role === 'user'
+                      ? 'bg-primary-light dark:bg-primary-dark ml-auto rounded-t-xl rounded-l-xl text-white'
+                      : 'bg-gray-100 dark:bg-gray-700 mr-auto rounded-t-xl rounded-r-xl'
                   }`}
                 >
-                  {message.text}
+                  {message.content}
                 </motion.div>
               ))
             )}
@@ -368,14 +377,15 @@ const TrainingDetails: React.FC = () => {
             {!Boolean(completionProgress === 100) ? (
               <Button
                 type="primary"
-                size="large"
+                
+                size={isMobile ? 'middle' : 'large'}
                 onClick={handleCompleteTraining}
                 loading={isCompleting}
                 iconPosition='end'
                 icon={<CheckOutlined />}
-                className="mb-4"
+                className="bg-green-500"
               >
-              סיימתי את ההדרכה
+                {isMobile ? 'סיימתי' : 'סיימתי את ההדרכה'}
               </Button>
             ) : (
               <Tag color="success" icon={<CheckOutlined />} className="">
@@ -384,13 +394,13 @@ const TrainingDetails: React.FC = () => {
             )}
             {nextTraining && (
               <Button 
-                type="primary" 
-                size="large"
+                type="default" 
+                size={isMobile ? 'middle' : 'large'}
                 iconPosition='end'
                 onClick={() => navigate(`/trainings/${nextTraining.id}`)}
                 icon={<ArrowLeftOutlined />}
               >
-                להדרכה הבאה
+                {isMobile ? 'הבא' : 'להדרכה הבאה'}
               </Button>
             )}
           </motion.div>

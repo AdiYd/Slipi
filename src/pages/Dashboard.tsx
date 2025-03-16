@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Statistic, Typography, Spin, Carousel, Button, Progress, List, Avatar } from 'antd';
+import { Row, Col, Card, Typography, Spin, Carousel, Button, Progress, List, Avatar } from 'antd';
 import { VideoCameraOutlined, ClockCircleOutlined, TrophyOutlined, LeftOutlined, RightOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
 import { useTraining } from '../contexts/TrainingContext';
@@ -8,6 +8,7 @@ import DashboardLayout from '../components/layouts/DashboardLayout';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import '../index.css';
+import { useMediaQuery } from 'react-responsive';
 
 const { Title } = Typography;
 
@@ -16,6 +17,7 @@ const Dashboard: React.FC = () => {
   const { trainings, loading, error } = useTraining();
   const { user } = useAuth();
   const carouselRef = React.useRef<any>(null);
+  const isSmallScreen = useMediaQuery({ query: '(max-width: 480px)' });
   const navigate = useNavigate();
 
   
@@ -58,7 +60,7 @@ const Dashboard: React.FC = () => {
         }
       },
       {
-        breakpoint: 768,
+        breakpoint: 769,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
@@ -106,35 +108,118 @@ const Dashboard: React.FC = () => {
 
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-          <Card className="card* text-center">
-            <Statistic
-              title={<span className="text-text-light dark:text-text-dark">סה״כ הדרכות</span>}
-              value={trainings?.length}
-              prefix={<VideoCameraOutlined className="text-primary-light mx-4 dark:text-primary-dark" />}
-              className="text-text-light dark:text-text-dark"
-            />
-          </Card>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="card* relative group overflow-hidden h-[180px]">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/10 via-fuchsia-500/10 to-pink-500/10 dark:from-violet-500/20 dark:via-fuchsia-500/20 dark:to-pink-500/20 transition-opacity duration-300 group-hover:opacity-80" />
+              
+              {/* Decorative shapes - Circles pattern */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -right-4 top-4 w-8 h-8 rounded-full border-2 border-violet-500/20 dark:border-violet-500/30" />
+                <div className="absolute right-8 top-12 w-4 h-4 rounded-full border-2 border-fuchsia-500/20 dark:border-fuchsia-500/30" />
+                <div className="absolute -left-4 bottom-4 w-12 h-12 rounded-full border-2 border-pink-500/20 dark:border-pink-500/30" />
+                <div className="absolute left-12 bottom-8 w-6 h-6 rounded-full border-2 border-violet-500/20 dark:border-violet-500/30" />
+              </div>
+              
+              <div className="relative items-center my-auto flex gap-8 mt-6 h-full">
+                {/* Updated icon container with gradient */}
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 p-[2px] transition-transform duration-300 group-hover:scale-110">
+                  <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
+                    <VideoCameraOutlined style={{ fontSize: '24px', background: 'linear-gradient(to bottom right, #8b5cf6, #ec4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
+                  </div>
+                </div>
+
+                <div className="text-right mt-auto">
+                  <h3 className="text-3xl font-bold mb-2 bg-gradient-to-br from-violet-500 via-fuchsia-500 to-pink-500 bg-clip-text text-transparent">
+                    {trainings?.length || 0}
+                    <span className="text-base font-normal mr-2 text-textSecondary-light dark:text-textSecondary-dark">הכשרות שונות במערכת</span>
+                  </h3>
+                  <Title level={5} className="text-textSecondary-light dark:text-textSecondary-dark text-base">
+                    סה״כ הדרכות
+                  </Title>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </Col>
+
         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-          <Card className="card* text-center">
-            <Statistic
-              title={<span className="text-text-light dark:text-text-dark">זמן למידה כולל</span>}
-              value={totalDuration}
-              suffix="דקות"
-              prefix={<ClockCircleOutlined className="text-primary-light mx-4 dark:text-primary-dark" />}
-              className="text-text-light dark:text-text-dark"
-            />
-          </Card>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="card* relative group overflow-hidden h-[180px]">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-sky-500/10 to-blue-500/10 dark:from-cyan-500/20 dark:via-sky-500/20 dark:to-blue-500/20 transition-opacity duration-300 group-hover:opacity-80" />
+              
+              {/* Decorative shapes - Squares pattern */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute -right-2 top-6 w-8 h-8 border-2 border-cyan-500/20 dark:border-cyan-500/30 rotate-12" />
+                <div className="absolute right-12 top-2 w-4 h-4 border-2 border-sky-500/20 dark:border-sky-500/30 -rotate-6" />
+                <div className="absolute -left-4 bottom-4 w-10 h-10 border-2 border-blue-500/20 dark:border-blue-500/30 rotate-45" />
+                <div className="absolute left-8 bottom-8 w-6 h-6 border-2 border-cyan-500/20 dark:border-cyan-500/30 -rotate-12" />
+              </div>
+              
+              <div className="relative items-center my-auto flex gap-8 mt-6 h-full">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-500 p-[2px] transition-transform duration-300 group-hover:scale-110">
+                  <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
+                    <ClockCircleOutlined style={{ fontSize: '24px', background: 'linear-gradient(to bottom right, #06b6d4, #3b82f6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
+                  </div>
+                </div>
+
+                <div className="text-right mt-auto">
+                  <h3 className="text-3xl font-bold mb-2 bg-gradient-to-br from-cyan-500 via-sky-500 to-blue-500 bg-clip-text text-transparent">
+                    {totalDuration || 0}
+                    <span className="text-base font-normal mr-2 text-textSecondary-light dark:text-textSecondary-dark">דקות</span>
+                  </h3>
+                  <Title level={5} className="text-textSecondary-light dark:text-textSecondary-dark text-base">
+                    זמן למידה משוער
+                  </Title>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </Col>
+
         <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-          <Card className="card* text-center">
-            <Statistic
-              title={<span className="text-text-light dark:text-text-dark">הדרכות שהושלמו</span>}
-              value={completedTrainingsList.length}
-              prefix={<TrophyOutlined className="text-primary-light mx-4 dark:text-primary-dark" />}
-              className="text-text-light dark:text-text-dark"
-            />
-          </Card>
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3 }}
+          >
+            <Card className="card* relative group overflow-hidden h-[180px]">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 via-green-500/10 to-teal-500/10 dark:from-emerald-500/20 dark:via-green-500/20 dark:to-teal-500/20 transition-opacity duration-300 group-hover:opacity-80" />
+              
+              {/* Decorative shapes - Stars/Diamond pattern */}
+              <div className="absolute inset-0 overflow-hidden">
+                <div className="absolute right-4 top-4 w-8 h-8 border-2 border-emerald-500/20 dark:border-emerald-500/30 rotate-45" />
+                <div className="absolute right-16 top-8 w-4 h-4 border-2 border-green-500/20 dark:border-green-500/30 rotate-45" />
+                <div className="absolute -left-2 bottom-6 w-10 h-10 border-2 border-teal-500/20 dark:border-teal-500/30 rotate-45" />
+                <div className="absolute left-12 bottom-2 w-6 h-6 border-2 border-emerald-500/20 dark:border-emerald-500/30 rotate-45" />
+              </div>
+              
+              <div className="relative items-center my-auto flex gap-8 mt-6 h-full">
+                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 p-[2px] transition-transform duration-300 group-hover:scale-110">
+                  <div className="w-full h-full rounded-full bg-white dark:bg-gray-900 flex items-center justify-center">
+                    <TrophyOutlined style={{ fontSize: '24px', background: 'linear-gradient(to bottom right, #10b981, #14b8a6)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
+                  </div>
+                </div>
+
+                <div className="text-right mt-auto">
+                  <h3 className="text-3xl font-bold mb-2 bg-gradient-to-br from-emerald-500 via-green-500 to-teal-500 bg-clip-text text-transparent">
+                    {completedTrainingsList.length || 0}
+                    <span className="text-base font-normal mr-2 text-textSecondary-light dark:text-textSecondary-dark">הדרכות הושלמו</span>
+                  </h3>
+                  <Title level={5} className="text-textSecondary-light dark:text-textSecondary-dark text-base">
+                    נותרו עוד {trainings?.length - completedTrainingsList.length || 0} הדרכות
+                  </Title>
+                </div>
+              </div>
+            </Card>
+          </motion.div>
         </Col>
       </Row>
 
@@ -176,7 +261,7 @@ const Dashboard: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-visible px-8"
+          className="relative overflow-visible px-8 max-sm:px-2"
         >
           <Button
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10"
@@ -191,10 +276,10 @@ const Dashboard: React.FC = () => {
             className="training-carousel"
           >
             {trainings?.map((training) => ( 
-              <div key={training.id} className="px-2 overflow-visible">
+              <div key={training.id} className="px-2 max-sm:px-1 overflow-visible">
                 <TrainingCard {...training} />
               </div>
-            )).reverse()}
+            ))}
           </Carousel>
 
           <Button
@@ -266,7 +351,7 @@ const Dashboard: React.FC = () => {
             dataSource={remainingTrainingsList}
             renderItem={training => (
               <List.Item
-                actions={[
+                actions={isSmallScreen ? [] :[
                   <Button type="primary" onClick={() => navigate(`/trainings/${training.id}`)}>
                     התחל הדרכה
                   </Button>
@@ -276,10 +361,16 @@ const Dashboard: React.FC = () => {
                   avatar={<Avatar src={training.imageUrl} />}
                   title={training.title}
                   description={
-                    <div>
-                      <div>{training.subtitle}</div>
-                      <div>{`${training.duration} דקות • ${training.category}`}</div>
-                    </div>
+                    <>
+                      <div>
+                        <div>{training.subtitle}</div>
+                        <div>{`${training.duration} דקות • ${training.category}`}</div>
+                      </div>
+                      {isSmallScreen &&
+                      <Button className='mt-4' type="primary" onClick={() => navigate(`/trainings/${training.id}`)}>
+                      התחל הדרכה
+                    </Button>}
+                    </>
                   }
                 />
               </List.Item>

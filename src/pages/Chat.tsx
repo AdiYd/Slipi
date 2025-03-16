@@ -125,7 +125,9 @@ const ChatPage: React.FC = () => {
         </motion.div>
 
         {/* Main chat area - full width on mobile */}
-        <Card className="flex-1 border-[1px]  flex h-auto flex-col min-h-[500px] lg:min-h-0">
+        <Card 
+        itemProp='chat'
+        className="flex-1 border-[1px] flex h-auto flex-col min-h-[500px]">
           <AnimatePresence mode="wait">
             {activeTrainingId ? (
               <motion.div
@@ -134,7 +136,7 @@ const ChatPage: React.FC = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
-                className="h-full flex flex-col"
+                className="h-full p-0 flex flex-col"
               >
                 {/* Chat Header */}
                 <div className="mb-4">
@@ -147,7 +149,7 @@ const ChatPage: React.FC = () => {
                 </div>
 
                 {/* Chat Messages */}
-                <div className="flex-1 chat-container overflow-y-auto border-[0.9px] rounded-lg border-border-light dark:border-border-dark mb-4 space-y-4 p-4">
+                <div className="flex-1 chat-container overflow-y-auto border-[0.9px] rounded-lg border-border-light dark:border-border-dark mb-4 space-y-4 p-4 max-sm:p-2">
                   {currentChatHistory.length > 0 ? (
                     currentChatHistory.map((message, index) => (
                       <motion.div
@@ -155,24 +157,21 @@ const ChatPage: React.FC = () => {
                         initial={{ opacity: 0, x: message.role === 'user' ? 20 : -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3 }}
-                        className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                        className={`flex ${message.role === 'user' ? 'justify-start' : 'justify-end'}`}
                       >
                         <div
-                          className={`inline-block p-3 max-w-[80%] rounded-2xl ${
-                            message.role === 'user'
-                              ? 'bg-primary-light/80 dark:bg-primary-dark/80 backdrop-blur-sm w-fit min-w-[100px] text-center text-white rounded-bl-none'
-                              : 'bg-gray-100/80 dark:bg-gray-700/80 backdrop-blur-sm w-fit min-w-[100px] text-center rounded-br-none'
+                          className={`inline-block p-3 max-w-[80%] min-w-[100px] text-center w-fit backdrop-blur-lg rounded-xl ${
+                            message.role === 'assistant'
+                              ? 'bg-primary-light/80 dark:bg-primary-dark/80 text-white rounded-bl-none'
+                              : 'bg-gray-100/80 dark:bg-gray-700/80 rounded-br-none'
                           }`}
                         >
                           <div className="whitespace-pre-wrap break-words">
                             {message.content}
                           </div>
                           <Text 
-                            className={`text-xs mt-1 block ${
-                              message.role === 'user' 
-                                ? 'text-white/80' 
-                                : 'text-gray-500 dark:text-gray-400'
-                            }`}
+                            type='secondary'
+                            className='text-xs text-start mt-1 block'
                           >
                             {new Date(message.timestamp).toLocaleTimeString('he-IL')}
                           </Text>

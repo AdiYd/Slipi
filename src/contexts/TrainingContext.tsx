@@ -32,9 +32,9 @@ export const exampleTrainings: Training[] = [
     duration: 30,
     difficulty: 'beginner',
     category: 'מבוא',
-    imageUrl: 'https://picsum.photos/seed/welcome/200/300',
+    imageUrl: 'https://picsum.photos/seed/welcome/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/ברוכים-הבאים-ל-Slipi.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/A.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/A.docx`
   },
   {
     id: '2',
@@ -44,9 +44,9 @@ export const exampleTrainings: Training[] = [
     duration: 45,
     difficulty: 'beginner',
     category: 'ידע מקצועי',
-    imageUrl: 'https://picsum.photos/seed/sleep/200/300',
+    imageUrl: 'https://picsum.photos/seed/sleep/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/עולם-השינה-האיכותית.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/B.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/B.docx`
   },
   {
     id: '3',
@@ -56,9 +56,9 @@ export const exampleTrainings: Training[] = [
     duration: 60,
     difficulty: 'intermediate',
     category: 'מוצרים',
-    imageUrl: 'https://picsum.photos/seed/products/200/300',
+    imageUrl: 'https://picsum.photos/seed/products/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/הכרת-מוצרי-החברה.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/C.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/C.docx`
   },
   {
     id: '4',
@@ -68,9 +68,9 @@ export const exampleTrainings: Training[] = [
     duration: 75,
     difficulty: 'intermediate',
     category: 'מכירות',
-    imageUrl: 'https://picsum.photos/seed/sales/200/300',
+    imageUrl: 'https://picsum.photos/seed/sales/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/אמנות-המכירה-והשירות.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/D.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/D.docx`
   },
   {
     id: '5',
@@ -80,9 +80,9 @@ export const exampleTrainings: Training[] = [
     duration: 90,
     difficulty: 'advanced',
     category: 'טכנולוגיה ומערכות',
-    imageUrl: 'https://picsum.photos/seed/solutions/200/300',
+    imageUrl: 'https://picsum.photos/seed/solutions/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/פתרונות-מותאמים-אישית.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/E.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/E.docx`
   },
   {
     id: '6',
@@ -92,9 +92,9 @@ export const exampleTrainings: Training[] = [
     duration: 60,
     difficulty: 'advanced',
     category: 'שירות לקוחות',
-    imageUrl: 'https://picsum.photos/seed/service/200/300',
+    imageUrl: 'https://picsum.photos/seed/service/500',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/מצוינות-בשירות.mp4',
-    fileUrl: 'http://localhost:5173/assets/trainings/F.docx'
+    fileUrl: `${import.meta.env.VITE_BASE_URL}/assets/trainings/F.docx`
   }
 ];
 

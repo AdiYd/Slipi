@@ -1,0 +1,207 @@
+{
+  "api": {
+    "authentication": [
+      {
+        "route": "/api/auth/login",
+        "type": "post",
+        "parameters": "email (string), password (string)",
+        "description": "Authenticates a user with their email and password",
+        "response": "Object containing token and user data with status 200, or error response"
+      },
+      {
+        "route": "/api/auth/signup",
+        "type": "post",
+        "parameters": "userData (object) containing fullName, email, phone, password, trainings (empty array)",
+        "description": "Registers a new user in the system",
+        "response": "Object containing token and user data with status 200, or error response"
+      },
+      {
+        "route": "/api/auth/update",
+        "type": "put",
+        "parameters": "userData (object) containing user information to update",
+        "description": "Updates the current user's information",
+        "response": "Object containing updated user data with status 200, or error response"
+      },
+      {
+        "route": "/api/auth/validate",
+        "type": "post",
+        "parameters": "token (string)",
+        "description": "Validates a user's authentication token",
+        "response": "Object containing user data with status 200, or error response"
+      }
+    ],
+    "users": [
+      {
+        "route": "api/users/:id",
+        "type": "put",
+        "parameters": "id (string) as URL parameter, user profile data (object) containing fullName, email, phone, currentPassword, newPassword",
+        "description": "Updates a specific user's profile information",
+        "response": "Success message with status 200, or error response"
+      }
+    ],
+    "trainings": [
+      {
+        "route": "/api/trainings",
+        "type": "get",
+        "parameters": "None (requires authentication)",
+        "description": "Retrieves the list of available trainings",
+        "response": "Array of training objects with status 200, or error response"
+      }
+    ]
+  },
+  "data_structures": {
+    "User": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the user"
+      },
+      "fullName": {
+        "type": "string",
+        "description": "User's full name"
+      },
+      "email": {
+        "type": "string",
+        "description": "User's email address, used for login"
+      },
+      "phone": {
+        "type": "string",
+        "description": "User's phone number"
+      },
+      "trainings": {
+        "type": "array of user training objects",
+        "description": "List of training objects associated with this user, each training object contain id, chatSession (array of ChatMessage objects), and completion status",
+        "example": [
+          {
+            "id": "1",
+            "chatSession": [
+              {
+                "content": "Hello, how are you?",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "user"
+              },
+              {
+                "content": "I'm fine, thank you!",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "assistant"
+              }
+            ],
+            "completed": false
+          }
+        ]
+      },
+      "example": {
+        "id": "1",
+        "fullName": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "0501234567",
+        "trainings": [
+          {
+            "id": "1",
+            "chatSession": [
+              {
+                "content": "Hello, how are you?",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "user"
+              },
+              {
+                "content": "I'm fine, thank you!",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "assistant"
+              }
+            ],
+            "completed": true
+          },
+          {
+            "id": "2",
+            "chatSession": [
+              {
+                "content": "Hello, how are you?",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "user"
+              },
+              {
+                "content": "I'm fine, thank you!",
+                "timestamp": "2021-01-01T00:00:00.000Z",
+                "role": "assistant"
+              }
+            ],
+            "completed": false
+          }
+        ]
+      }
+    },
+    "Training": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for the training"
+      },
+      "title": {
+        "type": "string",
+        "description": "Title of the training"
+      },
+      "subtitle": {
+        "type": "string",
+        "description": "Subtitle or short description of the training"
+      },
+      "description": {
+        "type": "string",
+        "description": "Detailed description of the training content"
+      },
+      "duration": {
+        "type": "number",
+        "description": "Duration of the training in minutes"
+      },
+      "difficulty": {
+        "type": "string (enum)",
+        "description": "Difficulty level: 'beginner', 'intermediate', or 'advanced'"
+      },
+      "category": {
+        "type": "string",
+        "description": "Category the training belongs to"
+      },
+      "imageUrl": {
+        "type": "string",
+        "description": "URL to the training's thumbnail or cover image (optional)"
+      },
+      "videoUrl": {
+        "type": "string",
+        "description": "URL to the training video content (optional)"
+      },
+      "fileUrl": {
+        "type": "string",
+        "description": "URL to the training document (DOCX file)"
+      },
+      "example": {
+        "id": "1",
+        "title": "Learn to code",
+        "subtitle": "Learn to code in 10 days",
+        "description": "Learn to code in 10 days by doing 10 projects",
+        "duration": 10,
+        "difficulty": "beginner",
+        "category": "Programming",
+        "imageUrl": "https://example.com/training-image.jpg",
+        "videoUrl": "https://example.com/training-video.mp4",
+        "fileUrl": "https://example.com/training-document.docx"
+      }
+    },
+    "ChatMessage": {
+      "content": {
+        "type": "string",
+        "description": "The content of the message"
+      },
+      "timestamp": {
+        "type": "string (ISO date format)",
+        "description": "When the message was sent"
+      },
+      "role ": {
+        "type": "string (enum)",
+        "description": "Whether the message was sent by the user (user) or by the system/bot (assistant)"
+      },
+      "example": {
+        "content": "Hello, how are you?",
+        "timestamp": "2021-01-01T00:00:00.000Z",
+        "role": "user"
+      }
+    }
+  }
+}
