@@ -193,7 +193,7 @@ input {
 .chat-container {
   background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
   /* background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); */
-  background-size: contain;
+  background-size: auto;
   background-position: fixed;
   /* height: 500px; Adjust as needed */
   overflow-y: auto;

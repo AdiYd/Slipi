@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-interface Training {
+
+interface TrainingUser {
   id: string;
   completed: boolean;
   chatSession: ChatMessage[];
@@ -23,15 +23,17 @@ interface User {
   fullName: string;
   email: string;
   phone: string;
-  trainings: Training[];
+  trainings: TrainingUser[];
 }
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  error: string | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (userData: Omit<User, 'id'> & { password: string }) => Promise<void>;
   logout: () => void;
+  updateUser: (userData: User| null) => Promise<void>;
 }
 
 export const exampleUser = {
@@ -102,34 +104,32 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    if (import.meta.env.VITE_NODE_ENV === 'development') {
-      login('', '');
-      setLoading(false);
-      return;
-    }
-    if (token) {
-      validateToken(token);
-    } else {
-      setLoading(false);
-    }
+  useEffect(() => { 
+    checkAuth();
   }, []);
 
-  const validateToken = async (token: string) => {
+  const checkAuth = async () => {
     try {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setLoading(false);
+        return;
+      } 
       const response = await axios.post('/api/auth/validate', { token });
-      if (response.status === 200) {
+      if (response.status === 200 && response.data.user) {
         setUser(response.data.user);
-      } else {
-        localStorage.removeItem('authToken');
       }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      localStorage.removeItem('authToken');
+      if (import.meta.env.VITE_NODE_ENV === 'development') {
+        // In development, use example user
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setUser(exampleUser);
+        navigate('/dashboard');
+      }
     } finally {
       setLoading(false);
     }
@@ -137,22 +137,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     try {
+      setError(null);
       setLoading(true);
       const response = await axios.post('/api/auth/login', { email, password });
-      const { token, user } = response.data;
-      localStorage.setItem('authToken', token);
-      setUser(user);
-      message.success('התחברת בהצלחה!');
-      return;
-    } catch (error) {
-      if (import.meta.env.VITE_NODE_ENV === 'development') {
-        localStorage.setItem('authToken', 'demo');
-        setUser(exampleUser);
-        message.success('התחברת בהצלחה!');
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        setUser(response.data.user);
         navigate('/dashboard');
-        return;
       }
-      throw new Error('התחברות נכשלה');
+    } catch (error) {
+      console.error('Login failed:', error);
+      if (import.meta.env.VITE_NODE_ENV === 'development') {
+        // In development, use example user
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setUser(exampleUser);
+        navigate('/dashboard');
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
     } finally {
       setLoading(false);
     }
@@ -160,22 +162,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = async (userData: Omit<User, 'id'> & { password: string }) => {
     try {
+      setError(null);
       const response = await axios.post('/api/auth/signup', userData);
-      const { token, user } = response.data;
-      localStorage.setItem('authToken', token);
-      setUser(user);
+      if (response.data.token) {
+        localStorage.setItem('authToken', response.data.token);
+        setUser(response.data.user);
+        navigate('/dashboard');
+      }
     } catch (error) {
-      throw new Error('הרשמה נכשלה');
+      console.error('Signup failed:', error);
+      setError('Signup failed. Please try again.');
+    }
+  };
+
+  const updateUser = async (userData: User | null) => {
+    try {
+      setError(null);
+      if (import.meta.env.VITE_NODE_ENV === 'development') {
+        // In development, simulate API call
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        setUser(userData);
+      } else {
+        const response = await axios.post('/api/auth/update', userData);
+        if (response.status === 200 && response.data.user) {
+          setUser(response.data.user);
+        }
+      }
+    } catch (error) {
+      console.error('User update failed:', error);
+      throw error;
     }
   };
 
   const logout = () => {
     localStorage.removeItem('authToken');
     setUser(null);
+    navigate('/login');
+  };
+
+  const value = {
+    user,
+    loading,
+    error,
+    login,
+    signup,
+    logout,
+    updateUser
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );

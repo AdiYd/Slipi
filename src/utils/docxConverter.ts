@@ -454,3 +454,60 @@ export const convertDocxToHtml = async (file: File): Promise<ConversionResult> =
     };
   }
 }; 
+
+export const convertDocxToHtmlByUrl = async (url: string): Promise<ConversionResult> => {
+  try {
+    // Add headers to ensure proper file download
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to download file: HTTP ${response.status} - ${response.statusText}`);
+    }
+
+    // Get the content type to verify we're receiving a DOCX file
+    const contentType = response.headers.get('content-type');
+    console.log('Content-Type:', contentType); // Debug log
+
+    // Be more lenient with content type checking as servers might not set it correctly
+    if (contentType && !contentType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document') &&
+        !contentType.includes('application/octet-stream') &&
+        !contentType.includes('application/msword')) {
+      console.warn(`Warning: Unexpected content type: ${contentType}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+    if (!arrayBuffer || arrayBuffer.byteLength === 0) {
+      throw new Error('Downloaded file is empty');
+    }
+
+    console.log(`File size: ${arrayBuffer.byteLength} bytes`); // Debug log
+
+    // Create a File object with proper MIME type
+    const file = new File([arrayBuffer], 'document.docx', {
+      type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    });
+
+    return await convertDocxToHtml(file);
+  } catch (error) {
+    console.error('Error downloading or processing file:', error);
+    return {
+      html: '',
+      success: false,
+      logs: [`Error downloading or processing file: ${error instanceof Error ? error.message : String(error)}`],
+      error: error instanceof Error ? error.message : 'Failed to download or process file',
+      debugInfo: {
+        error: error instanceof Error ? error.message : String(error),
+        errorType: error instanceof Error ? error.name : 'Unknown',
+        url: url, // Include URL in debug info
+        timestamp: new Date().toISOString()
+      }
+    };
+  }
+};
+
+

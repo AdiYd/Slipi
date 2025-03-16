@@ -2,7 +2,7 @@ import React from 'react';
 import { Row, Col, Card, Statistic, Typography, Spin, Carousel, Button, Progress, List, Avatar } from 'antd';
 import { VideoCameraOutlined, ClockCircleOutlined, TrophyOutlined, LeftOutlined, RightOutlined, CheckCircleOutlined, MessageOutlined } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
+import { useTraining } from '../contexts/TrainingContext';
 import TrainingCard from '../components/TrainingCard';
 import DashboardLayout from '../components/layouts/DashboardLayout';
 import { useAuth } from '../contexts/AuthContext';
@@ -19,17 +19,15 @@ const Dashboard: React.FC = () => {
   const navigate = useNavigate();
 
   
-  const allTrainings = trainings || exampleTrainings;
-  
-  const completedTrainingsList = allTrainings.filter(training => 
+  const completedTrainingsList = trainings?.filter(training => 
     user?.trainings.find(ut => ut.id === training.id && ut.completed)
   );
 
-  const remainingTrainingsList = allTrainings.filter(training => 
+  const remainingTrainingsList = trainings?.filter(training => 
     !user?.trainings.find(ut => ut.id === training.id && ut.completed)
   );
 
-  const completionPercentage = Math.round((completedTrainingsList.length / allTrainings.length) * 100);
+  const completionPercentage = Math.round((completedTrainingsList.length / trainings?.length) * 100);
   const totalDuration = completedTrainingsList.reduce((acc, training) => acc + training.duration, 0);
 
   const chatHistory = user?.trainings
@@ -79,7 +77,7 @@ const Dashboard: React.FC = () => {
   const handlePrev = () => carouselRef.current?.prev();
   const handleNext = () => carouselRef.current?.next();
 
-  if (loading) {
+  if (loading || !trainings) {
     return (
       <DashboardLayout>
         <div className="flex justify-center items-center h-full">
@@ -111,7 +109,7 @@ const Dashboard: React.FC = () => {
           <Card className="card* text-center">
             <Statistic
               title={<span className="text-text-light dark:text-text-dark">סה״כ הדרכות</span>}
-              value={allTrainings.length}
+              value={trainings?.length}
               prefix={<VideoCameraOutlined className="text-primary-light mx-4 dark:text-primary-dark" />}
               className="text-text-light dark:text-text-dark"
             />
@@ -157,10 +155,10 @@ const Dashboard: React.FC = () => {
             />
             <div className="text-center">
               <p className="text-lg mb-2">
-                השלמת {completedTrainingsList.length} מתוך {allTrainings.length} הדרכות
+                השלמת {completedTrainingsList.length} מתוך {trainings?.length} הדרכות
               </p>
               <p className="text-gray-500">
-                {completedTrainingsList.length === allTrainings.length 
+                {completedTrainingsList.length === trainings?.length 
                   ? 'כל הכבוד! השלמת את כל ההדרכות'
                   : 'המשך ללמוד כדי להשלים את כל ההדרכות'}
               </p>
@@ -192,11 +190,11 @@ const Dashboard: React.FC = () => {
             {...settings}
             className="training-carousel"
           >
-            {allTrainings.map((training) => ( 
+            {trainings?.map((training) => ( 
               <div key={training.id} className="px-2 overflow-visible">
                 <TrainingCard {...training} />
               </div>
-            ))}
+            )).reverse()}
           </Carousel>
 
           <Button
@@ -243,7 +241,7 @@ const Dashboard: React.FC = () => {
         <div className="card*">
           <Title level={3}>המוצרים שלנו</Title>
           <Row gutter={[16, 16]}>
-            {exampleTrainings.map(product => (
+            {trainings?.map(product => (
               <Col key={product.id} xs={24} sm={12} md={8}>
                 <Card
                   hoverable

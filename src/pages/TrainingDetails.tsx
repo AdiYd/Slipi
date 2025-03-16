@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Button, Space, Typography, Input, Row, Col, Card, List, Avatar } from 'antd';
+import { Button, Space, Typography, Input, Row, Col, Card, List, Avatar, Progress, message, Tag } from 'antd';
 import { 
   ArrowRightOutlined, 
+  ArrowLeftOutlined,
   SendOutlined, 
   WhatsAppOutlined,
   MailOutlined,
@@ -12,13 +13,19 @@ import {
   StarOutlined,
   VideoCameraOutlined,
   QuestionCircleOutlined,
-  LinkedinOutlined
+  LinkedinOutlined,
+
+  CheckOutlined
 } from '@ant-design/icons';
 import DashboardLayout from '../components/layouts/DashboardLayout';
-import { exampleTrainings, useTraining } from '../contexts/TrainingContext';
+import { useTraining } from '../contexts/TrainingContext';
+import { useAuth } from '../contexts/AuthContext';
 import { motion } from 'framer-motion';
 import DocxRenderer from '../components/DocxRenderer';
 import '../index.css';
+import DocxConverter from '../components/DocxConverter';
+import axios from 'axios';
+
 
 const { Title } = Typography;
 const { TextArea } = Input;
@@ -38,12 +45,37 @@ const TrainingDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { trainings } = useTraining();
+  const { user, updateUser } = useAuth();
   const [chatMessage, setChatMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<Array<{ text: string; isUser: boolean }>>([]);
+  const [completionProgress, setCompletionProgress] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false);
+  
+  useEffect(() => {
+    // Reset progress
+    const isCompleted = user?.trainings?.find(t => t.id === id)?.completed;
+    if (isCompleted) {
+      setCompletionProgress(100);
+    } else {
+      setCompletionProgress(0);
+    }
+  }, [user, id]);
+
+  // Find the current training and adjacent trainings
+  const { training, nextTraining, prevTraining } = useMemo(() => { 
+    if (!trainings || !id) return { training: null, nextTraining: null, prevTraining: null };
+    
+    const currentIndex = trainings.findIndex(t => t.id === id);
+    if (currentIndex === -1) return { training: null, nextTraining: null, prevTraining: null };
+    
+    return {
+      training: trainings[currentIndex],
+      nextTraining: currentIndex < trainings.length - 1 ? trainings[currentIndex + 1] : null,
+      prevTraining: currentIndex > 0 ? trainings[currentIndex - 1] : null
+    };
+  }, [trainings, id]);
 
 
-  // Find the current training
-  const training = (trainings || exampleTrainings)?.find(t => t.id === id) || null;
 
   if (!training) {
     return (
@@ -59,23 +91,117 @@ const TrainingDetails: React.FC = () => {
     );
   }
 
-
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!chatMessage.trim()) return;
 
     // Add user message
     setChatMessages(prev => [...prev, { text: chatMessage, isUser: true }]);
 
-    // Here you would typically make an API call to your chatbot service
+    let chatbotResponse = '';
+    try {
+      const response = await axios.post('/api/chatbot', {
+        message: chatMessage
+      });
+      chatbotResponse = response.data;
+    } catch (error) {
+      chatbotResponse = 'תודה על השאלה! אני אשמח לעזור לך. האם תוכל/י לפרט יותר?';
+    }
+
     // For now, we'll simulate a response
     setTimeout(() => {
       setChatMessages(prev => [...prev, {
-        text: "תודה על השאלה! אני אשמח לעזור לך. האם תוכל/י לפרט יותר?",
+        text: chatbotResponse,
         isUser: false
       }]);
     }, 1000);
 
+    let updatedUser = user;
+    const isTrainingExists = user?.trainings.find(t => t.id === training.id);
+    if (!isTrainingExists) {
+      updatedUser?.trainings.push({
+        id: training.id,
+        completed: false,
+        chatSession: []
+      });
+    }
+
+    updatedUser?.trainings.map(t => 
+      t.id === training.id ? ({ ...t, 
+        chatSession: [...t.chatSession, {
+        role: 'user',
+        content: chatMessage,
+        timestamp: new Date().toISOString()
+      },
+      {
+        role: 'assistant',
+        content: chatbotResponse,
+        timestamp: new Date().toISOString()
+      }
+      ] }) : t
+    ) ;
+    console.log('updatedTrainings', updatedUser);
+    
+    
+    await updateUser(updatedUser);
+
     setChatMessage('');
+  };
+
+  const handleCompleteTraining = async () => {
+    try {
+      setIsCompleting(true);
+      
+      // Start progress animation
+      setCompletionProgress(0);
+      const interval = setInterval(async () => {
+        setCompletionProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(interval);
+            finishSequence();
+            return 100;
+          }
+          return prev + 2;
+        });
+      }, 50);
+
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Update user's training status
+      const finishSequence = async () => {
+        const updatedTrainings = user.trainings.map(t => 
+          t.id === training.id ? { ...t, completed: true } : t
+        );
+        if (!updatedTrainings.find(t => t.id === training.id)) {
+          updatedTrainings.push({
+            id: training.id,
+            completed: true,
+            chatSession: []
+          });
+        }
+        const updatedUser = {
+          ...user,
+          trainings: updatedTrainings
+        };
+        await updateUser(updatedUser); 
+        // Ensure progress bar reaches 100%
+        setCompletionProgress(100);
+        setTimeout(() => {
+          setIsCompleting(false);
+          message.success('ההדרכה הושלמה בהצלחה 🎉');
+          // navigate('/trainings');
+        }, 300);
+      };
+
+      // await finishSequence();
+
+    } catch (error) {
+      console.error('Failed to complete training:', error);
+      message.error('Failed to complete training. Please try again.');
+      setIsCompleting(false);
+      setCompletionProgress(0);
+    }
   };
 
   return (
@@ -86,16 +212,68 @@ const TrainingDetails: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-   
+  
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center mb-4">
+          {prevTraining && (
+            <Button
+              type="default"
+              size="small"
+              icon={<ArrowRightOutlined />}
+              onClick={() => navigate(`/trainings/${prevTraining.id}`)}
+              className="flex items-center gap-1 text-primary-light hover:text-primary-dark"
+            >
+              להדרכה הקודמת
+            </Button>
+          )}
+          {nextTraining && (
+            <Button
+              type="default"
+              size="small"
+              onClick={() => navigate(`/trainings/${nextTraining.id}`)}
+              className="flex items-center gap-1 text-primary-light hover:text-primary-dark"
+            >
+              להדרכה הבאה
+              <ArrowLeftOutlined />
+            </Button>
+          )}
+        </div>
 
         {/* Main Content */}
         <motion.div
-        className="w-fit h-fit mx-auto my-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
+          className="w-full h-fit mx-auto my-8 relative"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
         >
+          {/* Training Navigation Overlay */}
+          {/* <div className="absolute top-2 right-2 left-2 flex justify-between z-10">
+            {prevTraining && (
+              <Button
+                size="small"
+                icon={<ArrowRightOutlined />}
+                onClick={() => navigate(`/trainings/${prevTraining.id}`)}
+                className="bg-white/80 hover:bg-white shadow-sm"
+              />
+            )}
+            {nextTraining && (
+              <Button
+                size="small"
+                icon={<ArrowLeftOutlined />}
+                onClick={() => navigate(`/trainings/${nextTraining.id}`)}
+                className="bg-white/80 hover:bg-white shadow-sm"
+              />
+            )}
+          </div> */}
+          <Title level={4} className="mb-4">{training.title}</Title>
+          <Title level={5} className="mb-4">{training.subtitle}</Title>
+          <p className="mb-4">{training.description}</p>
+          {training.fileUrl ? 
+            <DocxConverter fileUrl={training.fileUrl} />
+            :
             <DocxRenderer />
+          }
         </motion.div>
 
         {/* Chat Section */}
@@ -156,9 +334,70 @@ const TrainingDetails: React.FC = () => {
             />
           </div>
         </motion.div>
+        
+        <div className="my-8">
+
+        {/* Progress Bar */}
+        {completionProgress > 0 && (
+            <motion.div 
+            className="flex justify-center  mb-4 items-center"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            >
+            <Progress
+                percent={completionProgress}
+                status={completionProgress === 100 ? 'success' : 'active'}
+                strokeColor={{
+                '0%': '#108ee9',
+                //   '50%': '#108ee9',
+                '100%': '#87d068',
+                }}
+                className="mb-4 max-w-[80%] "
+                />
+            </motion.div>
+        )}
+
+          {/* Completion Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="flex items-center justify-between px-4">
+            {/* Action Buttons */}
+            {!Boolean(completionProgress === 100) ? (
+              <Button
+                type="primary"
+                size="large"
+                onClick={handleCompleteTraining}
+                loading={isCompleting}
+                iconPosition='end'
+                icon={<CheckOutlined />}
+                className="mb-4"
+              >
+              סיימתי את ההדרכה
+              </Button>
+            ) : (
+              <Tag color="success" icon={<CheckOutlined />} className="">
+                  הדרכה הושלמה
+              </Tag>
+            )}
+            {nextTraining && (
+              <Button 
+                type="primary" 
+                size="large"
+                iconPosition='end'
+                onClick={() => navigate(`/trainings/${nextTraining.id}`)}
+                icon={<ArrowLeftOutlined />}
+              >
+                להדרכה הבאה
+              </Button>
+            )}
+          </motion.div>
+        </div>
 
         {/* Related Trainings */}
-        <motion.div 
+        {/* <motion.div 
           className="card rounded-lg p-6 shadow-sm my-8"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,7 +429,7 @@ const TrainingDetails: React.FC = () => {
                 </Col>
               ))}
           </Row>
-        </motion.div>
+        </motion.div> */}
 
         {/* Key Learning Points */}
         <motion.div 

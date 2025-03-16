@@ -34,7 +34,7 @@ export const exampleTrainings: Training[] = [
     category: 'מבוא',
     imageUrl: 'https://picsum.photos/seed/welcome/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/ברוכים-הבאים-ל-Slipi.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/ברוכים-הבאים-ל-Slipi.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/A.docx'
   },
   {
     id: '2',
@@ -46,7 +46,7 @@ export const exampleTrainings: Training[] = [
     category: 'ידע מקצועי',
     imageUrl: 'https://picsum.photos/seed/sleep/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/עולם-השינה-האיכותית.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/עולם-השינה-האיכותית.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/B.docx'
   },
   {
     id: '3',
@@ -58,7 +58,7 @@ export const exampleTrainings: Training[] = [
     category: 'מוצרים',
     imageUrl: 'https://picsum.photos/seed/products/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/הכרת-מוצרי-החברה.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/הכרת-מוצרי-החברה.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/C.docx'
   },
   {
     id: '4',
@@ -70,7 +70,7 @@ export const exampleTrainings: Training[] = [
     category: 'מכירות',
     imageUrl: 'https://picsum.photos/seed/sales/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/אמנות-המכירה-והשירות.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/אמנות-המכירה-והשירות.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/D.docx'
   },
   {
     id: '5',
@@ -82,7 +82,7 @@ export const exampleTrainings: Training[] = [
     category: 'טכנולוגיה ומערכות',
     imageUrl: 'https://picsum.photos/seed/solutions/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/פתרונות-מותאמים-אישית.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/פתרונות-מותאמים-אישית.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/E.docx'
   },
   {
     id: '6',
@@ -94,7 +94,7 @@ export const exampleTrainings: Training[] = [
     category: 'שירות לקוחות',
     imageUrl: 'https://picsum.photos/seed/service/200/300',
     videoUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/מצוינות-בשירות.mp4',
-    fileUrl: 'https://www.slipi.co.il/wp-content/uploads/2024/03/מצוינות-בשירות.docx'
+    fileUrl: 'http://localhost:5173/assets/trainings/F.docx'
   }
 ];
 

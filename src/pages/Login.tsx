@@ -21,6 +21,7 @@ const Login: React.FC = () => {
   const onFinish = async (values: LoginForm) => {
     try {
       await login(values.email, values.password);
+      message.success('התחברת בהצלחה!');
       navigate('/dashboard');
     } catch {
       message.error('שגיאה בהתחברות');
