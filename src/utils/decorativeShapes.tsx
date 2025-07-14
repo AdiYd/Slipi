@@ -9,13 +9,13 @@ const defaultColorScheme = {
   to: 'rgb(102, 187, 245)',
 }
 
-interface ShapeProps {
-  size: number;
-  color: string;
-  darkColor: string;
-  position: Position;
-  rotation?: number;
-}
+// interface ShapeProps {
+//   size: number;
+//   color: string;
+//   darkColor: string;
+//   position: Position;
+//   rotation?: number;
+// }
 
 const generateRandomPosition = (): Position => {
   // Generate random positions including negative values for overflow effect

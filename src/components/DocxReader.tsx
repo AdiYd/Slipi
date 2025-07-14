@@ -20,11 +20,11 @@ interface MatchResult {
 function WordToHtml() {
   const [htmlContent, setHtmlContent] = useState('');
   const [loading, setLoading] = useState(false);
-  const [debugInfo, setDebugInfo] = useState<any>({});
-  const [error, setError] = useState<string | null>(null);
+  const [, setDebugInfo] = useState<any>({});
+  const [, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [colorData, setColorData] = useState<any[]>([]);
-  const [processingLog, setProcessingLog] = useState<string[]>([]);
+  const [, setColorData] = useState<any[]>([]);
+  const [, setProcessingLog] = useState<string[]>([]);
 
   // STEP 1: Extract colors and their context
   const extractColorContext = async (arrayBuffer: ArrayBuffer) => {
