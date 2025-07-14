@@ -1,8 +1,5 @@
 # Slipi - מערכת הכשרה למפיצים 🚀
 
-<p align="center">
-  <img src="./src/assets/logo.png" alt="Slipi Logo" width="200" />
-</p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
@@ -17,7 +14,7 @@
 
 מערכת הכשרה למפיצי חברת Slipi, המאפשרת גישה לתכני הכשרה, שאלות ותשובות, ומעקב אחר התקדמות.
 
-## 📸 תצלומי מסך
+## 📸 צילום מסך
 
 <div align="center">
   <img src="./src/mocks/slipi1.png" alt="Slipi Dashboard" width="400" />
@@ -107,7 +104,6 @@ src/
 ├── config/        # הגדרות תצורה
 ├── contexts/      # React Contexts
 ├── hooks/         # Custom React Hooks
-├── mocks/         # נתונים לדוגמה ותצלומי מסך
 ├── pages/         # דפי האפליקציה
 ├── services/      # שירותי API ואינטגרציה
 ├── styles/        # קבצי סגנון
@@ -115,20 +111,8 @@ src/
 └── utils/         # פונקציות עזר
 ```
 
-## 🤝 תרומה לפרויקט
-
-1. צור fork של המאגר
-2. צור branch חדש (`git checkout -b feature/amazing-feature`)
-3. בצע commit לשינויים (`git commit -m 'Add some amazing feature'`)
-4. דחוף ל-branch (`git push origin feature/amazing-feature`)
-5. פתח Pull Request
-
 ## 📝 רישיון
 
-פרויקט זה מופץ תחת רישיון MIT. ראה את קובץ `LICENSE` לפרטים נוספים.
+פרטי
 
 ---
-
-<p align="center">
-  <sub>נבנה בגאווה בישראל 🇮🇱</sub>
-</p>
